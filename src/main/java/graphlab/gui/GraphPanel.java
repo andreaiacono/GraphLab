@@ -2,6 +2,7 @@ package graphlab.gui;
 
 import graphlab.algorithms.GraphSearch;
 import graphlab.datastructures.*;
+import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,18 +12,19 @@ import java.util.function.Consumer;
 
 public class GraphPanel extends JPanel {
 
-    private DrawingPanel drawingPanel;
+    private SearchPanel searchPanel;
     private AdjacencyListGraph graph;
-    private int side;
     private List<Node> visitedNodes = new ArrayList<>();
     private List<Edge> visitedEdges = new ArrayList<>();
     private List<Node> processedNodes = new ArrayList<>();
     private SearchType searchType;
+    private int side;
     private int speed;
+    private GraphSearchWorker searchWorker;
 
-    public GraphPanel(SearchType searchType, DrawingPanel drawingPanel, AdjacencyListGraph graph) {
+    public GraphPanel(SearchType searchType, SearchPanel searchPanel, AdjacencyListGraph graph) {
         this.searchType = searchType;
-        this.drawingPanel = drawingPanel;
+        this.searchPanel = searchPanel;
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(230, 230, 230));
@@ -58,9 +60,7 @@ public class GraphPanel extends JPanel {
         }
         g2.setStroke(new BasicStroke(1));
 
-        graph.getNodes().forEach(node -> {
-            drawColoredNode(g2, mf, (node), null);
-        });
+        graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node), null));
 
         if (graph.getNodes().size() > 0) {
             drawColoredNode(g2, mf, (graph.getNodes().get(0)), Color.GREEN);
@@ -97,7 +97,7 @@ public class GraphPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = drawingPanel.getSize();
+        Dimension dimension = searchPanel.getSize();
         side = dimension.width < dimension.height * 2 ? dimension.width / 2 - 10 : dimension.height - 10;
         return new Dimension(side, side);
     }
@@ -110,15 +110,10 @@ public class GraphPanel extends JPanel {
         repaint();
     }
 
-    private void updateGraph() {
+    private void updateGraph() throws Exception {
         repaint();
         if (speed > 0) {
-            try {
-                Thread.sleep(speed);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(speed);
         }
     }
 
@@ -127,8 +122,16 @@ public class GraphPanel extends JPanel {
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
         repaint();
-        new GraphSearchWorker(visitedNodes, visitedEdges, processedNodes).execute();
-        repaint();
+        searchWorker = new GraphSearchWorker(visitedNodes, visitedEdges, processedNodes);
+        searchWorker.execute();
+    }
+
+    public void stopSearch() {
+        searchWorker.cancel(true);
+    }
+
+    public void setSearchAsFinished () {
+        searchPanel.setSearchAsFinished();
     }
 
     public void setSpeed(int speed) {
@@ -150,23 +153,28 @@ public class GraphPanel extends JPanel {
         @Override
         protected Void doInBackground() throws Exception {
 
+            Boolean isCanceled = new Boolean(false);
+
             Consumer<Node> visitNode = node -> visitedNodes.add(node);
             Consumer<Node> processNode = node -> processedNodes.add(node);
-            Consumer<Edge> visitEdge = edge -> {
+            ConsumerWithException<Edge> visitEdge = edge -> {
                 visitedEdges.add(edge);
                 updateGraph();
             };
 
             switch (searchType) {
                 case BFS:
-                    GraphSearch.bfs(graph, visitNode, visitEdge, processNode);
+                    GraphSearch.bfs(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
                 case DFS:
-                    GraphSearch.dfs(graph, visitNode, visitEdge, processNode);
+                    GraphSearch.dfs(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
+
+            setSearchAsFinished();
             return null;
         }
 
     }
+
 }

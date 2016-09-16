@@ -10,7 +10,8 @@ public class Main extends JFrame implements ChangeListener {
 
     private final JLabel statusBar;
     private final JSplitPane spDivider;
-    private final DrawingPanel drawingPanel;
+    private final SearchPanel searchPanel;
+    private final JButton searchButton;
 
     public static void main(String[] args) throws Exception {
         new Main();
@@ -30,54 +31,67 @@ public class Main extends JFrame implements ChangeListener {
         }
 
         // control and drawing panels
-        drawingPanel = new DrawingPanel();
+        searchPanel = new SearchPanel(this);
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout());
 
-        spDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, drawingPanel, controlPanel);
+        spDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, searchPanel, controlPanel);
         spDivider.setDividerLocation(450);
         add(spDivider, BorderLayout.CENTER);
 
         JLabel speedLabel = new JLabel("Speed: ");
-        controlPanel.add(speedLabel);
         JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
         speedSlider.setName("speed");
-        drawingPanel.setSpeed(50);
-        controlPanel.add(speedSlider);
+        searchPanel.setSpeed(50);
         speedSlider.addChangeListener(this);
 
-        JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> drawingPanel.search());
-        controlPanel.add(searchButton);
-
-        JButton reset = new JButton("Reset");
-        reset.addActionListener(e -> drawingPanel.reset());
-        controlPanel.add(reset);
-
-        JButton newGraphButton = new JButton("New Graph");
-        newGraphButton.addActionListener(e -> drawingPanel.newGraph());
-        controlPanel.add(newGraphButton);
-
         JLabel nodesLabel = new JLabel("Nodes: ");
-        controlPanel.add(nodesLabel);
         JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
         nodesSlider.setName("nodes");
-        drawingPanel.setNodesNumber(100);
-        controlPanel.add(nodesSlider);
+        searchPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
         JLabel edgeLabel = new JLabel("Edges: ");
-        controlPanel.add(edgeLabel);
         JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 10);
         edgeSlider.setName("edges");
-        drawingPanel.setEdgesNumber(10);
-        controlPanel.add(edgeSlider);
+        searchPanel.setEdgesNumber(10);
         edgeSlider.addChangeListener(this);
 
         // sets the status bar
         statusBar = new JLabel("Ready");
         statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
         add(statusBar, BorderLayout.SOUTH);
+
+        // buttons
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> {
+            if (searchButton.getText().equals("Stop")) {
+                searchPanel.stopSearch();
+                searchButton.setText("Search");
+                statusBar.setText("Ready");
+            }
+            else {
+                statusBar.setText("Searching in progress..");
+                searchButton.setText("Stop");
+                searchPanel.search();
+            }
+        });
+
+        JButton reset = new JButton("Reset");
+        reset.addActionListener(e -> searchPanel.reset());
+
+        JButton newGraphButton = new JButton("New Graph");
+        newGraphButton.addActionListener(e -> searchPanel.newGraph());
+
+        controlPanel.add(speedLabel);
+        controlPanel.add(speedSlider);
+        controlPanel.add(searchButton);
+        controlPanel.add(reset);
+        controlPanel.add(newGraphButton);
+        controlPanel.add(nodesLabel);
+        controlPanel.add(nodesSlider);
+        controlPanel.add(edgeLabel);
+        controlPanel.add(edgeSlider);
 
         // starts
         setVisible(true);
@@ -87,13 +101,13 @@ public class Main extends JFrame implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSlider slider = (JSlider) e.getSource();
         if (slider.getName().equals("speed")) {
-            drawingPanel.setSpeed(slider.getValue());
+            searchPanel.setSpeed(slider.getValue());
         }
         else if (slider.getName().equals("nodes")) {
-            drawingPanel.setNodesNumber(slider.getValue());
+            searchPanel.setNodesNumber(slider.getValue());
         }
         else if (slider.getName().equals("edges")) {
-            drawingPanel.setEdgesNumber(slider.getValue());
+            searchPanel.setEdgesNumber(slider.getValue());
         }
     }
 
@@ -105,4 +119,7 @@ public class Main extends JFrame implements ChangeListener {
     }
 
 
+    public void setSearchAsFinished() {
+        searchButton.setText("Search");
+    }
 }

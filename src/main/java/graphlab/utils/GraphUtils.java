@@ -1,34 +1,15 @@
-package graphlab.gui;
+package graphlab.utils;
 
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Node;
-import graphlab.datastructures.SearchType;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+import java.util.Random;
 import java.util.stream.IntStream;
 
-public class DrawingPanel extends JPanel {
+public class GraphUtils {
 
-    private final GraphPanel bfsGraph;
-    private final GraphPanel dfsGraph;
-    private int edgesNumber = 8;
-    private int nodesNumber = 100;
+    public static AdjacencyListGraph createRandomGraph(int nodesNumber, int edgesNumber, int canvasSize) {
 
-    public DrawingPanel() {
-        FlowLayout flowLayout = new FlowLayout();
-        setLayout(flowLayout);
-
-        AdjacencyListGraph graph = createRandomGraph();
-        dfsGraph = new GraphPanel(SearchType.DFS, this, new AdjacencyListGraph(graph));
-        add(dfsGraph);
-        bfsGraph = new GraphPanel(SearchType.BFS, this, new AdjacencyListGraph(graph));
-        add(bfsGraph);
-    }
-
-    private AdjacencyListGraph createRandomGraph() {
-        int canvasSize = 500;
         Random random = new Random();
         AdjacencyListGraph graph = new AdjacencyListGraph();
         for (int j = 0; j < nodesNumber; j++) {
@@ -62,33 +43,4 @@ public class DrawingPanel extends JPanel {
         return graph;
     }
 
-    public void reset() {
-        dfsGraph.reset();
-        bfsGraph.reset();
-    }
-
-    public void newGraph() {
-        AdjacencyListGraph graph = createRandomGraph();
-        bfsGraph.setGraph(new AdjacencyListGraph(graph));
-        dfsGraph.setGraph(new AdjacencyListGraph(graph));
-    }
-
-    public void search() {
-        dfsGraph.search();
-        bfsGraph.search();
-    }
-
-    public void setSpeed(int speed) {
-        bfsGraph.setSpeed(speed);
-        dfsGraph.setSpeed(speed);
-    }
-
-    public void setEdgesNumber(int edgesNumber) {
-        this.edgesNumber = edgesNumber;
-    }
-
-    public void setNodesNumber(int nodesNumber) {
-        this.nodesNumber = nodesNumber;
-    }
 }
-
