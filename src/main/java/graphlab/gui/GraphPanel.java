@@ -27,7 +27,7 @@ public class GraphPanel extends JPanel {
         this.searchPanel = searchPanel;
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
-        setBackground(new Color(230, 230, 230));
+        setBackground(new Color(200, 200, 200));
     }
 
     public void setGraph(AdjacencyListGraph graph) {
@@ -45,22 +45,19 @@ public class GraphPanel extends JPanel {
         // makes a local copy of data to avoid concurrent modifications
         List<Edge> edges = new ArrayList<>(visitedEdges);
 
-        double mf = getPreferredSize().getHeight() / 500;
+        double mf = getPreferredSize().getHeight() / 550;
         Graphics2D g2 = (Graphics2D) g;
-        float color = 0;
-        g2.setStroke(new BasicStroke(1));
-
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
 
         float increment = 255 / (edges.size() != 0 ? new Float(edges.size()) : 255f);
+        float color = 0;
         g2.setStroke(new BasicStroke(3));
         for (Edge edge : edges) {
             color += increment;
             drawColoredEdge(g2, edge, mf, new Color((int) color, (int) color, 255));
         }
         g2.setStroke(new BasicStroke(1));
-
-        graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node), null));
+        graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
         if (graph.getNodes().size() > 0) {
             drawColoredNode(g2, mf, (graph.getNodes().get(0)), Color.GREEN);
@@ -69,19 +66,15 @@ public class GraphPanel extends JPanel {
 
     }
 
-    private void drawColoredNode(Graphics g, double mf, Node node, Color color) {
+    private void drawColoredNode(Graphics g, double mf, Node node) {
+        drawColoredNode(g, mf, node, null);
+    }
+    private void drawColoredNode(Graphics g, double mf, Node node, Color nodeColor) {
         int size = (int) (6 * mf);
-        if (color != null) {
-            g.setColor(color);
-        }
-        else {
-            if (node.getStatus() == NodeStatus.UNKNOWN) g.setColor(Color.RED);
-            if (node.getStatus() == NodeStatus.DISCOVERED) g.setColor(Color.GRAY);
-            if (node.getStatus() == NodeStatus.PROCESSED) g.setColor(new Color(245, 245, 245));
-        }
-        g.fillOval(((int) (node.getX() * mf)) - size, ((int) (node.getY() * mf)) - size, size * 2, size * 2);
+        g.setColor(nodeColor == null ? node.getStatus().color : nodeColor);
+        g.fillOval(((int) (node.getX() * mf)) - size + 10, ((int) (node.getY() * mf)) - size + 20, size * 2, size * 2);
         g.setColor(Color.BLACK);
-        g.drawOval(((int) (node.getX() * mf)) - size, ((int) (node.getY() * mf)) - size, size * 2, size * 2);
+        g.drawOval(((int) (node.getX() * mf)) - size + 10, ((int) (node.getY() * mf)) - size + 20, size * 2, size * 2);
     }
 
     private void drawColoredEdge(Graphics g, Edge edge, double mf, Color edgeColor) {
@@ -89,10 +82,10 @@ public class GraphPanel extends JPanel {
         Node sourceNode = edge.getSource();
         Node destinationNode = edge.getDestination();
         g.drawLine(
-                (int) (sourceNode.getX() * mf),
-                (int) (sourceNode.getY() * mf),
-                (int) (destinationNode.getX() * mf),
-                (int) (destinationNode.getY() * mf));
+                (int) (sourceNode.getX() * mf) + 10,
+                (int) (sourceNode.getY() * mf)+ 20,
+                (int) (destinationNode.getX() * mf)+ 10,
+                (int) (destinationNode.getY() * mf)+ 20);
     }
 
     @Override
@@ -107,6 +100,7 @@ public class GraphPanel extends JPanel {
         visitedNodes = new ArrayList<>();
         visitedEdges = new ArrayList<>();
         processedNodes = new ArrayList<>();
+        graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
         repaint();
     }
 
@@ -138,6 +132,10 @@ public class GraphPanel extends JPanel {
         this.speed = speed;
     }
 
+    public void setProgressBar(int value) {
+        searchPanel.setProgressBar(value);
+    }
+
     class GraphSearchWorker extends SwingWorker<Void, Void> {
 
         List<Node> visitedNodes;
@@ -155,7 +153,10 @@ public class GraphPanel extends JPanel {
 
             Boolean isCanceled = new Boolean(false);
 
-            Consumer<Node> visitNode = node -> visitedNodes.add(node);
+            Consumer<Node> visitNode = node -> {
+                visitedNodes.add(node);
+                setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size())*100));
+            };
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
                 visitedEdges.add(edge);
@@ -171,6 +172,7 @@ public class GraphPanel extends JPanel {
                     break;
             }
 
+            setProgressBar(100);
             setSearchAsFinished();
             return null;
         }

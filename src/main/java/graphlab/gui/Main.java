@@ -12,6 +12,9 @@ public class Main extends JFrame implements ChangeListener {
     private final JSplitPane spDivider;
     private final SearchPanel searchPanel;
     private final JButton searchButton;
+    private final JProgressBar progressBar;
+    private final JButton newGraphButton;
+    private final JButton resetButton;
 
     public static void main(String[] args) throws Exception {
         new Main();
@@ -62,31 +65,50 @@ public class Main extends JFrame implements ChangeListener {
         statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
         add(statusBar, BorderLayout.SOUTH);
 
+        JPanel statusPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        progressBar.setValue(0);
+        c.gridx = 0;
+        c.weightx = 1;
+        statusPanel.add(statusBar, c);
+        c.gridx = 10;
+        c.weightx = 0;
+        statusPanel.add(progressBar, c);
+        add(statusPanel, BorderLayout.SOUTH);
+
+
         // buttons
+        resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> { searchPanel.reset(); progressBar.setValue(0);});
+
+        newGraphButton = new JButton("New Graph");
+        newGraphButton.addActionListener(e -> searchPanel.newGraph());
+
         searchButton = new JButton("Search");
         searchButton.addActionListener(e -> {
             if (searchButton.getText().equals("Stop")) {
                 searchPanel.stopSearch();
                 searchButton.setText("Search");
                 statusBar.setText("Ready");
+                newGraphButton.setEnabled(true);
+                resetButton.setEnabled(true);
             }
             else {
                 statusBar.setText("Searching in progress..");
                 searchButton.setText("Stop");
                 searchPanel.search();
+                resetButton.setEnabled(false);
+                newGraphButton.setEnabled(false);
             }
         });
-
-        JButton reset = new JButton("Reset");
-        reset.addActionListener(e -> searchPanel.reset());
-
-        JButton newGraphButton = new JButton("New Graph");
-        newGraphButton.addActionListener(e -> searchPanel.newGraph());
 
         controlPanel.add(speedLabel);
         controlPanel.add(speedSlider);
         controlPanel.add(searchButton);
-        controlPanel.add(reset);
+        controlPanel.add(resetButton);
         controlPanel.add(newGraphButton);
         controlPanel.add(nodesLabel);
         controlPanel.add(nodesSlider);
@@ -111,6 +133,10 @@ public class Main extends JFrame implements ChangeListener {
         }
     }
 
+    public void setProgressBar(int value) {
+        progressBar.setValue(value);
+        repaint();
+    }
 
     @Override
     public void paint(Graphics g) {
@@ -121,5 +147,8 @@ public class Main extends JFrame implements ChangeListener {
 
     public void setSearchAsFinished() {
         searchButton.setText("Search");
+        statusBar.setText("Ready");
+        newGraphButton.setEnabled(true);
+        resetButton.setEnabled(true);
     }
 }

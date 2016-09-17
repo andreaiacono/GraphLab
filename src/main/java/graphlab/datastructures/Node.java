@@ -22,6 +22,7 @@ public class Node {
         this.key = index;
         this.x = x;
         this.y = y;
+        this.status = NodeStatus.UNKNOWN;
     }
 
     public void addEdge(Node destination) {

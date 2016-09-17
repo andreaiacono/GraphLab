@@ -65,5 +65,9 @@ public class SearchPanel extends JPanel {
     public void setNodesNumber(int nodesNumber) {
         this.nodesNumber = nodesNumber;
     }
+
+    public void setProgressBar(int value) {
+        main.setProgressBar(value);
+    }
 }
 
