@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 public class GraphPanel extends JPanel {
 
-    private SearchPanel searchPanel;
+    private TraversalPanel traversalPanel;
     private AdjacencyListGraph graph;
     private List<Node> visitedNodes = new ArrayList<>();
     private List<Edge> visitedEdges = new ArrayList<>();
@@ -22,9 +22,9 @@ public class GraphPanel extends JPanel {
     private int speed;
     private GraphSearchWorker searchWorker;
 
-    public GraphPanel(SearchType searchType, SearchPanel searchPanel, AdjacencyListGraph graph) {
+    public GraphPanel(SearchType searchType, TraversalPanel traversalPanel, AdjacencyListGraph graph) {
         this.searchType = searchType;
-        this.searchPanel = searchPanel;
+        this.traversalPanel = traversalPanel;
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
@@ -90,7 +90,7 @@ public class GraphPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = searchPanel.getSize();
+        Dimension dimension = traversalPanel.getSize();
         side = dimension.width < dimension.height * 2 ? dimension.width / 2 - 10 : dimension.height - 10;
         return new Dimension(side, side);
     }
@@ -125,7 +125,7 @@ public class GraphPanel extends JPanel {
     }
 
     public void setSearchAsFinished () {
-        searchPanel.setSearchAsFinished();
+        traversalPanel.setSearchAsFinished();
     }
 
     public void setSpeed(int speed) {
@@ -133,7 +133,7 @@ public class GraphPanel extends JPanel {
     }
 
     public void setProgressBar(int value) {
-        searchPanel.setProgressBar(value);
+        traversalPanel.setProgressBar(value);
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {

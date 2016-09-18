@@ -7,7 +7,7 @@ import graphlab.utils.GraphUtils;
 import javax.swing.*;
 import java.awt.*;
 
-public class SearchPanel extends JPanel {
+public class TraversalPanel extends JPanel {
 
     private final GraphPanel bfsGraph;
     private final GraphPanel dfsGraph;
@@ -15,7 +15,7 @@ public class SearchPanel extends JPanel {
     private int nodesNumber = 100;
     private Main main;
 
-    public SearchPanel(Main main) {
+    public TraversalPanel(Main main) {
         this.main = main;
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);

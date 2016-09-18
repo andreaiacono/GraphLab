@@ -10,7 +10,7 @@ public class Main extends JFrame implements ChangeListener {
 
     private JLabel statusBar;
     private JSplitPane spDivider;
-    private SearchPanel searchPanel;
+    private TraversalPanel traversalPanel;
     private JButton searchButton;
     private JProgressBar progressBar;
     private JButton newGraphButton;
@@ -78,46 +78,46 @@ public class Main extends JFrame implements ChangeListener {
         JPanel traversalPanel = new JPanel(new GridLayout(0, 1));
 
         // control and drawing panels
-        searchPanel = new SearchPanel(this);
+        this.traversalPanel = new TraversalPanel(this);
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout());
 
-        spDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, searchPanel, controlPanel);
+        spDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.traversalPanel, controlPanel);
         spDivider.setDividerLocation(450);
         traversalPanel.add(spDivider, BorderLayout.CENTER);
 
         JLabel speedLabel = new JLabel("Speed: ");
         JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
         speedSlider.setName("speed");
-        searchPanel.setSpeed(50);
+        this.traversalPanel.setSpeed(50);
         speedSlider.addChangeListener(this);
 
         JLabel nodesLabel = new JLabel("Nodes: ");
         JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
         nodesSlider.setName("nodes");
-        searchPanel.setNodesNumber(100);
+        this.traversalPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
         JLabel edgeLabel = new JLabel("Edges: ");
         JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 10);
         edgeSlider.setName("edges");
-        searchPanel.setEdgesNumber(10);
+        this.traversalPanel.setEdgesNumber(10);
         edgeSlider.addChangeListener(this);
 
         // buttons
         resetButton = new JButton("Reset");
         resetButton.addActionListener(e -> {
-            searchPanel.reset();
+            this.traversalPanel.reset();
             progressBar.setValue(0);
         });
 
         newGraphButton = new JButton("New Graph");
-        newGraphButton.addActionListener(e -> searchPanel.newGraph());
+        newGraphButton.addActionListener(e -> this.traversalPanel.newGraph());
 
         searchButton = new JButton("Search");
         searchButton.addActionListener(e -> {
             if (searchButton.getText().equals("Stop")) {
-                searchPanel.stopSearch();
+                this.traversalPanel.stopSearch();
                 searchButton.setText("Search");
                 statusBar.setText("Ready");
                 newGraphButton.setEnabled(true);
@@ -126,7 +126,7 @@ public class Main extends JFrame implements ChangeListener {
             else {
                 statusBar.setText("Searching in progress..");
                 searchButton.setText("Stop");
-                searchPanel.search();
+                this.traversalPanel.search();
                 resetButton.setEnabled(false);
                 newGraphButton.setEnabled(false);
             }
@@ -149,13 +149,13 @@ public class Main extends JFrame implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSlider slider = (JSlider) e.getSource();
         if (slider.getName().equals("speed")) {
-            searchPanel.setSpeed(slider.getValue());
+            traversalPanel.setSpeed(slider.getValue());
         }
         else if (slider.getName().equals("nodes")) {
-            searchPanel.setNodesNumber(slider.getValue());
+            traversalPanel.setNodesNumber(slider.getValue());
         }
         else if (slider.getName().equals("edges")) {
-            searchPanel.setEdgesNumber(slider.getValue());
+            traversalPanel.setEdgesNumber(slider.getValue());
         }
     }
 
