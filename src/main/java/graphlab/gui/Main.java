@@ -8,13 +8,13 @@ import java.awt.*;
 
 public class Main extends JFrame implements ChangeListener {
 
-    private final JLabel statusBar;
-    private final JSplitPane spDivider;
-    private final SearchPanel searchPanel;
-    private final JButton searchButton;
-    private final JProgressBar progressBar;
-    private final JButton newGraphButton;
-    private final JButton resetButton;
+    private JLabel statusBar;
+    private JSplitPane spDivider;
+    private SearchPanel searchPanel;
+    private JButton searchButton;
+    private JProgressBar progressBar;
+    private JButton newGraphButton;
+    private JButton resetButton;
 
     public static void main(String[] args) throws Exception {
         new Main();
@@ -33,6 +33,50 @@ public class Main extends JFrame implements ChangeListener {
             // just tried
         }
 
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Traversal", createTraversalPanel());
+        tabbedPane.addTab("Search", createSearchPanel());
+
+        add(tabbedPane);
+        add(createStatusPanel(), BorderLayout.SOUTH);
+
+        // starts
+        setVisible(true);
+    }
+
+    private JPanel createStatusPanel() {
+
+        // sets the status bar
+        statusBar = new JLabel("Ready");
+        statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        add(statusBar, BorderLayout.SOUTH);
+
+        JPanel statusPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        progressBar.setValue(0);
+        c.gridx = 0;
+        c.weightx = 1;
+        statusPanel.add(statusBar, c);
+        c.gridx = 10;
+        c.weightx = 0;
+        statusPanel.add(progressBar, c);
+        return statusPanel;
+    }
+
+    private JPanel createSearchPanel() {
+        JPanel searchPanel = new JPanel();
+
+        return searchPanel;
+    }
+
+
+    private JPanel createTraversalPanel() {
+
+        JPanel traversalPanel = new JPanel(new GridLayout(0, 1));
+
         // control and drawing panels
         searchPanel = new SearchPanel(this);
         JPanel controlPanel = new JPanel();
@@ -40,7 +84,7 @@ public class Main extends JFrame implements ChangeListener {
 
         spDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, searchPanel, controlPanel);
         spDivider.setDividerLocation(450);
-        add(spDivider, BorderLayout.CENTER);
+        traversalPanel.add(spDivider, BorderLayout.CENTER);
 
         JLabel speedLabel = new JLabel("Speed: ");
         JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
@@ -60,29 +104,12 @@ public class Main extends JFrame implements ChangeListener {
         searchPanel.setEdgesNumber(10);
         edgeSlider.addChangeListener(this);
 
-        // sets the status bar
-        statusBar = new JLabel("Ready");
-        statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        add(statusBar, BorderLayout.SOUTH);
-
-        JPanel statusPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        progressBar.setValue(0);
-        c.gridx = 0;
-        c.weightx = 1;
-        statusPanel.add(statusBar, c);
-        c.gridx = 10;
-        c.weightx = 0;
-        statusPanel.add(progressBar, c);
-        add(statusPanel, BorderLayout.SOUTH);
-
-
         // buttons
         resetButton = new JButton("Reset");
-        resetButton.addActionListener(e -> { searchPanel.reset(); progressBar.setValue(0);});
+        resetButton.addActionListener(e -> {
+            searchPanel.reset();
+            progressBar.setValue(0);
+        });
 
         newGraphButton = new JButton("New Graph");
         newGraphButton.addActionListener(e -> searchPanel.newGraph());
@@ -115,8 +142,7 @@ public class Main extends JFrame implements ChangeListener {
         controlPanel.add(edgeLabel);
         controlPanel.add(edgeSlider);
 
-        // starts
-        setVisible(true);
+        return traversalPanel;
     }
 
     @Override
