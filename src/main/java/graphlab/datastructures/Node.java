@@ -10,12 +10,14 @@ public class Node {
     private int y;
     private NodeStatus status;
     private List<Edge> edges = new ArrayList<>();
+    private boolean isStartNode = false;
 
     public Node(Node node) {
         this.key = node.getKey();
         this.x= node.getX();
         this.y= node.getY();
         this.status = node.getStatus();
+        this.isStartNode = node.isStartNode();
     }
 
     public Node(int index, int x, int y) {
@@ -54,4 +56,11 @@ public class Node {
         return status;
     }
 
+    public boolean isStartNode() {
+        return isStartNode;
+    }
+
+    public void setStartNode(boolean startNode) {
+        isStartNode = startNode;
+    }
 }

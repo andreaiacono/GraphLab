@@ -14,6 +14,9 @@ public class GraphUtils {
         AdjacencyListGraph graph = new AdjacencyListGraph();
         for (int j = 0; j < nodesNumber; j++) {
             Node node = new Node(j, random.nextInt(canvasSize), random.nextInt(canvasSize));
+            if (j == 0) {
+                node.setStartNode(true);
+            }
             graph.addNode(node);
         }
 

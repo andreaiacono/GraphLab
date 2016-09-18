@@ -6,21 +6,31 @@ import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GraphPanel extends JPanel {
+public class GraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
 
+    private final JPopupMenu popupMenu;
     private TraversalPanel traversalPanel;
     private AdjacencyListGraph graph;
     private List<Node> visitedNodes = new ArrayList<>();
     private List<Edge> visitedEdges = new ArrayList<>();
     private List<Node> processedNodes = new ArrayList<>();
     private SearchType searchType;
-    private int side;
+    private int panelSide;
     private int speed;
     private GraphSearchWorker searchWorker;
+    int nodeSize;
+    private double mf;
+
+    // when drawing on panel, x and y coords are a bit shifted for not drawing nodes on borders
+    private int X_SHIFT = 10;
+    private int Y_SHIFT = 20;
+    private int clickedNodeX;
+    private int clickedNodeY;
 
     public GraphPanel(SearchType searchType, TraversalPanel traversalPanel, AdjacencyListGraph graph) {
         this.searchType = searchType;
@@ -28,6 +38,17 @@ public class GraphPanel extends JPanel {
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
+
+        popupMenu = new JPopupMenu();
+
+        JMenuItem menuItem = new JMenuItem("Set as starting node");
+        menuItem.addActionListener(this);
+        popupMenu.add(menuItem);
+
+        MouseListener popupListener = new PopupListener();
+        this.addMouseListener(popupListener);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     public void setGraph(AdjacencyListGraph graph) {
@@ -45,7 +66,7 @@ public class GraphPanel extends JPanel {
         // makes a local copy of data to avoid concurrent modifications
         List<Edge> edges = new ArrayList<>(visitedEdges);
 
-        double mf = getPreferredSize().getHeight() / 550;
+        mf = getPreferredSize().getHeight() / 550;
         Graphics2D g2 = (Graphics2D) g;
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
 
@@ -59,9 +80,6 @@ public class GraphPanel extends JPanel {
         g2.setStroke(new BasicStroke(1));
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
-        if (graph.getNodes().size() > 0) {
-            drawColoredNode(g2, mf, (graph.getNodes().get(0)), Color.GREEN);
-        }
         g.drawString(searchType.toString(), 5, 15);
 
     }
@@ -69,12 +87,14 @@ public class GraphPanel extends JPanel {
     private void drawColoredNode(Graphics g, double mf, Node node) {
         drawColoredNode(g, mf, node, null);
     }
+
     private void drawColoredNode(Graphics g, double mf, Node node, Color nodeColor) {
-        int size = (int) (6 * mf);
-        g.setColor(nodeColor == null ? node.getStatus().color : nodeColor);
-        g.fillOval(((int) (node.getX() * mf)) - size + 10, ((int) (node.getY() * mf)) - size + 20, size * 2, size * 2);
+        nodeSize = (int) (10 * mf);
+        Color color = node.isStartNode() ? Color.GREEN : nodeColor == null ? node.getStatus().color : nodeColor;
+        g.setColor(color);
+        g.fillOval(((int) (node.getX() * mf)) - nodeSize / 2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize / 2 + Y_SHIFT, nodeSize, nodeSize);
         g.setColor(Color.BLACK);
-        g.drawOval(((int) (node.getX() * mf)) - size + 10, ((int) (node.getY() * mf)) - size + 20, size * 2, size * 2);
+        g.drawOval(((int) (node.getX() * mf)) - nodeSize / 2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize / 2 + Y_SHIFT, nodeSize, nodeSize);
     }
 
     private void drawColoredEdge(Graphics g, Edge edge, double mf, Color edgeColor) {
@@ -82,17 +102,17 @@ public class GraphPanel extends JPanel {
         Node sourceNode = edge.getSource();
         Node destinationNode = edge.getDestination();
         g.drawLine(
-                (int) (sourceNode.getX() * mf) + 10,
-                (int) (sourceNode.getY() * mf)+ 20,
-                (int) (destinationNode.getX() * mf)+ 10,
-                (int) (destinationNode.getY() * mf)+ 20);
+                (int) (sourceNode.getX() * mf) + X_SHIFT,
+                (int) (sourceNode.getY() * mf) + Y_SHIFT,
+                (int) (destinationNode.getX() * mf) + X_SHIFT,
+                (int) (destinationNode.getY() * mf) + Y_SHIFT);
     }
 
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = traversalPanel.getSize();
-        side = dimension.width < dimension.height * 2 ? dimension.width / 2 - 10 : dimension.height - 10;
-        return new Dimension(side, side);
+        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
+        return new Dimension(panelSide, panelSide);
     }
 
 
@@ -124,7 +144,7 @@ public class GraphPanel extends JPanel {
         searchWorker.cancel(true);
     }
 
-    public void setSearchAsFinished () {
+    public void setSearchAsFinished() {
         traversalPanel.setSearchAsFinished();
     }
 
@@ -134,6 +154,14 @@ public class GraphPanel extends JPanel {
 
     public void setProgressBar(int value) {
         traversalPanel.setProgressBar(value);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Node clickedNode = graph.getNodes().stream().filter(node -> node.getX() == clickedNodeX && node.getY() == clickedNodeY).findFirst().get();
+        graph.getNodes().forEach(node -> node.setStartNode(false));
+        clickedNode.setStartNode(true);
+        repaint();
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {
@@ -155,7 +183,7 @@ public class GraphPanel extends JPanel {
 
             Consumer<Node> visitNode = node -> {
                 visitedNodes.add(node);
-                setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size())*100));
+                setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size()) * 100));
             };
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
@@ -179,4 +207,71 @@ public class GraphPanel extends JPanel {
 
     }
 
+    class PopupListener extends MouseAdapter {
+
+        public void mousePressed(MouseEvent e) {
+            Node clickedNode = getClickedNodeFromCoords(e.getX(), e.getY());
+            if (clickedNode != null) {
+                clickedNodeX = clickedNode.getX();
+                clickedNodeY = clickedNode.getY();
+                maybeShowPopup(e);
+            }
+        }
+
+        private Node getClickedNodeFromCoords(int x, int y) {
+            Node node = null;
+            for (Node n : graph.getNodes()) {
+                if (Math.abs(n.getX() - x / mf + X_SHIFT) < nodeSize &&
+                        Math.abs(n.getY() - y / mf + Y_SHIFT) < nodeSize) {
+                    node = n;
+                }
+            }
+            return node;
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
 }

@@ -8,6 +8,7 @@ import graphlab.utils.ConsumerWithException;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,7 +39,11 @@ public class GraphSearch {
 
         graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
         Deque<Node> queue = new ArrayDeque<>();
-        nodePutter.accept(queue, graph.getNodes().get(0));
+        Optional<Node> startingNode = graph.getNodes().stream().filter(node -> node.isStartNode()).findFirst();
+        if (!startingNode.isPresent()) {
+            return;
+        }
+        nodePutter.accept(queue, startingNode.get());
 
         while (!queue.isEmpty()) {
             Node node = nodeGetter.apply(queue);
