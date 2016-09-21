@@ -109,22 +109,29 @@ public class Main extends JFrame implements ChangeListener {
         resetButton.addActionListener(e -> {
             this.traversalPanel.reset();
             progressBar.setValue(0);
+            repaint();
         });
 
         newGraphButton = new JButton("New Graph");
-        newGraphButton.addActionListener(e -> this.traversalPanel.newGraph());
+        newGraphButton.addActionListener(e -> {
+            this.traversalPanel.newGraph();
+            progressBar.setValue(0);
+            repaint();
+        });
 
-        searchButton = new JButton("Search");
+        searchButton = new JButton("Traverse");
         searchButton.addActionListener(e -> {
             if (searchButton.getText().equals("Stop")) {
                 this.traversalPanel.stopSearch();
-                searchButton.setText("Search");
+                searchButton.setText("Traverse");
                 statusBar.setText("Ready");
                 newGraphButton.setEnabled(true);
                 resetButton.setEnabled(true);
+                progressBar.setValue(0);
+                repaint();
             }
             else {
-                statusBar.setText("Searching in progress..");
+                statusBar.setText("Traversing in progress..");
                 searchButton.setText("Stop");
                 this.traversalPanel.search();
                 resetButton.setEnabled(false);
@@ -160,8 +167,12 @@ public class Main extends JFrame implements ChangeListener {
     }
 
     public void setProgressBar(int value) {
-        progressBar.setValue(value);
-        repaint();
+        // show the progress for the faster of the two
+        if (progressBar.getValue() < value || value == 0) {
+            progressBar.setValue(value);
+            repaint();
+        }
+
     }
 
     @Override
@@ -172,7 +183,7 @@ public class Main extends JFrame implements ChangeListener {
 
 
     public void setSearchAsFinished() {
-        searchButton.setText("Search");
+        searchButton.setText("Traverse");
         statusBar.setText("Ready");
         newGraphButton.setEnabled(true);
         resetButton.setEnabled(true);

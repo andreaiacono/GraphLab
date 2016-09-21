@@ -200,7 +200,7 @@ public class GraphPanel extends JPanel implements ActionListener, MouseMotionLis
                     break;
             }
 
-            setProgressBar(100);
+            setProgressBar(0);
             setSearchAsFinished();
             return null;
         }
