@@ -5,6 +5,7 @@ import graphlab.datastructures.Graph;
 import graphlab.datastructures.Node;
 import graphlab.datastructures.NodeStatus;
 import graphlab.utils.ConsumerWithException;
+import graphlab.utils.GraphUtils;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -109,38 +110,37 @@ public class GraphSearch {
         queue.add(startingNode.get());
 
         while (!queue.isEmpty()) {
-            Node node = queue.poll();
-            if (node.isSearchedNode()) {
+            Node currentNode = queue.poll();
+            if (currentNode.isSearchedNode()) {
                 return;
             }
-            node.setStatus(NodeStatus.DISCOVERED);
-            onVisitedNode.accept(node);
+            currentNode.setStatus(NodeStatus.DISCOVERED);
+            onVisitedNode.accept(currentNode);
 
-            for (Edge edge : node.getEdges()) {
+            for (Edge edge : currentNode.getEdges()) {
                 Node child = edge.getDestination();
-                int currentCost = getDistance(node, child);
-                int heuristicCost = useHeuristic ? getDistance(startingNode.get(), child) : 0;
-                child.setPathCost(currentCost + node.getPathCost() + heuristicCost);
+
+                int oldChildCost = child.getPathCost();
+                int edgeCost = GraphUtils.getDistance(currentNode, child);
+                int heuristicCost = useHeuristic ? GraphUtils.getDistance(searchedNode.get(), child) : 0;
+                child.setPathCost(currentNode.getPathCost() + edgeCost + heuristicCost);
 
                 if ((edge.getDestination()).getStatus() == NodeStatus.UNKNOWN) {
                     queue.add(edge.getDestination());
                     (edge.getDestination()).setStatus(NodeStatus.DISCOVERED);
                     onVisitedEdge.accept(edge);
                 }
-                else if ((queue.contains(child)) && (child.getPathCost() > node.getPathCost())) {
+                else if ((queue.contains(child)) && (child.getPathCost() < oldChildCost)) {
                     // Java priority queue does not handle dynamic values,
                     // so this a trick (tough worsening performance)
                     queue.remove(child);
                     queue.add(child);
                 }
             }
-            node.setStatus(NodeStatus.PROCESSED);
-            onProcessedNode.accept(node);
+            currentNode.setStatus(NodeStatus.PROCESSED);
+            onProcessedNode.accept(currentNode);
             if (isCanceled) return;
         }
     }
 
-    private static int getDistance(Node start, Node end) {
-        return (int) Math.sqrt((Math.abs(start.getX() - end.getX()) + Math.abs(start.getY() - end.getY())));
-    }
 }

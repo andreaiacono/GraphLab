@@ -8,6 +8,7 @@ import graphlab.datastructures.SearchType;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.function.Consumer;
 
 public class GraphSearchPanel extends GraphPanel {
 
+    private Border WORKING_BORDER = BorderFactory.createEtchedBorder();
+    private Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
     private GraphSearchWorker searchWorker;
 
     public GraphSearchPanel(SearchType searchType, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
@@ -23,7 +26,7 @@ public class GraphSearchPanel extends GraphPanel {
         this.searchType = searchType;
         this.parentPanel = parentPanel;
         this.graph = graph;
-        setBorder(BorderFactory.createEtchedBorder());
+        setBorder(WORKING_BORDER);
         setBackground(new Color(200, 200, 200));
 
         JMenuItem menuItem = new JMenuItem(SET_SEARCHED_NODE_LABEL);
@@ -37,16 +40,19 @@ public class GraphSearchPanel extends GraphPanel {
     }
 
     public void startOperation() {
+        setBorder(WORKING_BORDER);
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
         repaint();
+        this.isFinished = false;
         searchWorker = new GraphSearchWorker(visitedNodes, visitedEdges, processedNodes);
         searchWorker.execute();
     }
 
     public void setOperationAsFinished() {
         this.isFinished = true;
+        setBorder(FINISHED_BORDER);
         if (parentPanel.graphPanels.stream().allMatch(panel -> panel.isFinished)) {
             parentPanel.setOperationAsFinished();
         }
@@ -55,12 +61,13 @@ public class GraphSearchPanel extends GraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = parentPanel.getSize();
-        panelSide = dimension.width < dimension.height * 4 ? dimension.width / 4 - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = dimension.width < dimension.height ? dimension.width /2 - X_SHIFT : dimension.height/2 - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
 
     public void stopOperation() {
+        setBorder(WORKING_BORDER);
         searchWorker.cancel(true);
     }
 

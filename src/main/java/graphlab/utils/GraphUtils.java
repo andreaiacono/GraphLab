@@ -18,7 +18,7 @@ public class GraphUtils {
      * @param maxValue    the max value a node's key can have
      * @return
      */
-    public static AdjacencyListGraph createRandomGraph(int nodesNumber, int edgesNumber, int maxValue) {
+    public static AdjacencyListGraph createRandomGraph(int nodesNumber, int edgesNumber, int maxValue, boolean undirected) {
 
         Random random = new Random();
         AdjacencyListGraph graph = new AdjacencyListGraph();
@@ -55,6 +55,9 @@ public class GraphUtils {
                     }
                     selectedEdges[k] = index;
                     currentNode.addEdge(nodes.get(index));
+                    if (undirected) {
+                        nodes.get(index).addEdge(currentNode);
+                    }
                 }
             }
         }
@@ -65,4 +68,9 @@ public class GraphUtils {
         return graph;
     }
 
+
+    public static int getDistance(Node start, Node end) {
+        // we don't need an euclidean distance, so there's no Math.sqrt()
+        return (int) (Math.pow(Math.abs(start.getX() - end.getX()),2) + Math.pow(Math.abs(start.getY() - end.getY()),2));
+    }
 }

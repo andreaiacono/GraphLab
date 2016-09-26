@@ -33,7 +33,7 @@ public class Main extends JFrame implements ChangeListener {
 
         super("GraphLab");
 
-        setSize(1400, 500);
+        setSize(900, 600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
@@ -284,5 +284,10 @@ public class Main extends JFrame implements ChangeListener {
         statusBar.setText("Ready");
         searchNewGraphButton.setEnabled(true);
         searchResetButton.setEnabled(true);
+    }
+
+    public void updateStatusBar(String message) {
+        statusBar.setText(message);
+        repaint();
     }
 }

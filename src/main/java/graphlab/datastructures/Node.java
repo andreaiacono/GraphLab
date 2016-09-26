@@ -109,4 +109,13 @@ public class Node {
     public void setPathCost(int pathCost) {
         this.pathCost = pathCost;
     }
+
+    @Override
+    public String toString() {
+        return "Node [" + key + "] (" + x + "," + y + ")";
+    }
+
+    public String toString(int distanceFromNode) {
+        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromNode + ")";
+    }
 }

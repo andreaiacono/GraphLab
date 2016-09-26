@@ -1,6 +1,7 @@
 package graphlab.gui;
 
 import graphlab.datastructures.*;
+import graphlab.utils.GraphUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +11,16 @@ import java.util.List;
 
 public abstract class GraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
 
+    private static final Font[] KEY_FONT = new Font[30];
+    static {
+        for (int j = 0; j < KEY_FONT.length; j++) {
+            KEY_FONT[j] = new Font("Arial", Font.BOLD, 4 + j);
+        }
+    }
+
     private static final String SET_STARTING_NODE_LABEL = "Set as starting node";
     protected static final String SET_SEARCHED_NODE_LABEL = "Set as searched node";
+    private static final Color KEY_COLOR = new Color(180, 180, 180);
     protected final JPopupMenu popupMenu;
     protected GraphContainerPanel parentPanel;
     protected AdjacencyListGraph graph;
@@ -28,7 +37,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
 
     // when drawing on panel, x and y coords are a bit shifted for not drawing nodes on borders
     protected int X_SHIFT = 10;
-    protected int Y_SHIFT = 20;
+    protected int Y_SHIFT = 40;
     protected int clickedNodeX;
     protected int clickedNodeY;
     protected boolean isMousePressed;
@@ -39,7 +48,6 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         this.parentPanel = parentPanel;
         this.graph = graph;
         this.hasSearchedNode = hasSearchedNode;
-        setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
 
         popupMenu = new JPopupMenu();
@@ -64,7 +72,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         // makes a local copy of data to avoid concurrent modifications
         List<Edge> edges = new ArrayList<>(visitedEdges);
 
-        mf = getPreferredSize().getHeight() / 550;
+        mf = getPreferredSize().getHeight() / 600;
         Graphics2D g2 = (Graphics2D) g;
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
 
@@ -78,6 +86,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         g2.setStroke(new BasicStroke(1));
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
+        g.setColor(Color.BLACK);
         g.drawString(searchType.getName(), 5, 15);
 
     }
@@ -87,7 +96,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     }
 
     private void drawColoredNode(Graphics g, double mf, Node node, Color nodeColor) {
-        nodeSize = (int) (10 * mf);
+        nodeSize = (int) (25 * mf);
         Color color;
         if (node.isStartNode()) {
             color = Color.GREEN;
@@ -104,9 +113,14 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
             color = new Color(0,100,200);
         }
         g.setColor(color);
-        g.fillOval(((int) (node.getX() * mf)) - nodeSize / 2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize / 2 + Y_SHIFT, nodeSize, nodeSize);
+        g.fillOval(((int) (node.getX() * mf)) - nodeSize/2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize/2 + Y_SHIFT, nodeSize, nodeSize);
         g.setColor(Color.BLACK);
-        g.drawOval(((int) (node.getX() * mf)) - nodeSize / 2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize / 2 + Y_SHIFT, nodeSize, nodeSize);
+        g.drawOval(((int) (node.getX() * mf)) - nodeSize/2 + X_SHIFT, ((int) (node.getY() * mf)) - nodeSize/2 + Y_SHIFT, nodeSize, nodeSize);
+        g.setColor(KEY_COLOR);
+        g.setFont(KEY_FONT[(int) (8*mf)]);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        int width = fontMetrics.stringWidth("" + node.getKey());
+        g.drawString(""+node.getKey(), (int) (node.getX() * mf) + (nodeSize/8 - width)/2 + X_SHIFT, (int) (node.getY() * mf) + nodeSize/4 + Y_SHIFT);
     }
 
     private void drawColoredEdge(Graphics g, Edge edge, double mf, Color edgeColor) {
@@ -170,8 +184,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     private Node getClickedNodeFromCoords(int x, int y) {
         Node node = null;
         for (Node n : graph.getNodes()) {
-            if (Math.abs(n.getX() - x / mf + X_SHIFT) < nodeSize &&
-                    Math.abs(n.getY() - y / mf + Y_SHIFT) < nodeSize) {
+            if (Math.abs(n.getX() - x/mf + nodeSize + X_SHIFT) < nodeSize &&
+                    Math.abs(n.getY() - y / mf + nodeSize + Y_SHIFT) < nodeSize) {
                 node = n;
             }
         }
@@ -195,8 +209,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     @Override
     public void mouseDragged(MouseEvent e) {
         if (isMousePressed) {
-            clickedNode.setX((int) (e.getX() / mf));
-            clickedNode.setY((int) (e.getY() / mf));
+            clickedNode.setX((int) (e.getX() / mf)- X_SHIFT);
+            clickedNode.setY((int) (e.getY() / mf) - Y_SHIFT);
             repaint();
         }
 
@@ -205,6 +219,13 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     @Override
     public void mouseMoved(MouseEvent e) {
         clickedNode = getClickedNodeFromCoords(e.getX(), e.getY());
+        if (clickedNode != null) {
+            Node startingNode = graph.getNodes().stream().filter(node -> node.isStartNode()).findFirst().get();
+            parentPanel.main.updateStatusBar(clickedNode.toString(GraphUtils.getDistance(startingNode, clickedNode)));
+        }
+        else {
+            parentPanel.main.updateStatusBar("Ready");
+        }
         repaint();
     }
 
@@ -247,9 +268,5 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     @Override
     public void mouseExited(MouseEvent e) {
 
-    }
-
-    public boolean isFinished() {
-        return isFinished;
     }
 }

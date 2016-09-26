@@ -17,7 +17,7 @@ public abstract class GraphContainerPanel extends JPanel {
 
     public GraphContainerPanel(Main main) {
         this.main = main;
-        graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500);
+        graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500, true);
         graphPanels = new ArrayList<>();
     }
 
@@ -36,7 +36,7 @@ public abstract class GraphContainerPanel extends JPanel {
     }
 
     public void newGraph() {
-        AdjacencyListGraph graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500);
+        AdjacencyListGraph graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500, true);
         graphPanels.forEach(panel -> panel.setGraph(new AdjacencyListGraph(graph)));
     }
 
