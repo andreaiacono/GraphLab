@@ -79,16 +79,27 @@ public class Main extends JFrame implements ChangeListener {
         this.searchGraphsContainerPanel = new SearchGraphsContainerPanel(this);
         JPanel containerPanel = new JPanel(new GridLayout(0, 1));
         JPanel controlPanel = new JPanel();
+        SpringLayout sl = new SpringLayout();
+        controlPanel.setLayout(sl);
 
-        searchDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.searchGraphsContainerPanel, controlPanel);
-        searchDivider.setDividerLocation(450);
+        searchDivider = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.searchGraphsContainerPanel, controlPanel);
+        searchDivider.setDividerLocation(400);
         containerPanel.add(searchDivider, BorderLayout.CENTER);
 
-        JLabel speedLabel = new JLabel("Speed: ");
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
-        speedSlider.setName("search_speed");
-        this.searchGraphsContainerPanel.setSpeed(50);
-        speedSlider.addChangeListener(this);
+
+        JLabel edgeLabel = new JLabel("Edges: ");
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
+        edgeSlider.setName("search_edges");
+        this.searchGraphsContainerPanel.setEdgesNumber(10);
+        edgeSlider.addChangeListener(this);
+
+        sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, edgeLabel, -13, SpringLayout.SOUTH, controlPanel);
+
+        sl.putConstraint(SpringLayout.WEST, edgeSlider, 5, SpringLayout.EAST, edgeLabel);
+        sl.putConstraint(SpringLayout.EAST, edgeSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, edgeSlider, -5, SpringLayout.SOUTH, controlPanel);
+
 
         JLabel nodesLabel = new JLabel("Nodes: ");
         JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
@@ -96,11 +107,26 @@ public class Main extends JFrame implements ChangeListener {
         this.searchGraphsContainerPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
-        JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
-        edgeSlider.setName("search_edges");
-        this.searchGraphsContainerPanel.setEdgesNumber(10);
-        edgeSlider.addChangeListener(this);
+        sl.putConstraint(SpringLayout.WEST, nodesLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, nodesLabel, -8, SpringLayout.NORTH, edgeSlider);
+
+        sl.putConstraint(SpringLayout.WEST, nodesSlider, 5, SpringLayout.EAST, nodesLabel);
+        sl.putConstraint(SpringLayout.EAST, nodesSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, nodesSlider, 0, SpringLayout.NORTH, edgeSlider);
+
+        JLabel speedLabel = new JLabel("Speed: ");
+        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
+        speedSlider.setName("search_speed");
+        this.searchGraphsContainerPanel.setSpeed(50);
+        speedSlider.addChangeListener(this);
+
+        sl.putConstraint(SpringLayout.WEST, speedLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, speedLabel, -23, SpringLayout.NORTH, nodesSlider);
+
+        sl.putConstraint(SpringLayout.WEST, speedSlider, 5, SpringLayout.EAST, speedLabel);
+        sl.putConstraint(SpringLayout.EAST, speedSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, speedSlider, -15, SpringLayout.NORTH, nodesSlider);
+
 
         // buttons
         searchResetButton = new JButton("Reset");
@@ -109,6 +135,7 @@ public class Main extends JFrame implements ChangeListener {
             progressBar.setValue(0);
             repaint();
         });
+
 
         searchNewGraphButton = new JButton("New Graph");
         searchNewGraphButton.addActionListener(e -> {
@@ -138,6 +165,19 @@ public class Main extends JFrame implements ChangeListener {
             }
         });
 
+        sl.putConstraint(SpringLayout.WEST, searchButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, searchButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, searchButton, 5, SpringLayout.NORTH, controlPanel);
+
+        sl.putConstraint(SpringLayout.WEST, searchResetButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, searchResetButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, searchResetButton, 25, SpringLayout.SOUTH, searchButton);
+
+        sl.putConstraint(SpringLayout.WEST, searchNewGraphButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, searchNewGraphButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, searchNewGraphButton, 5, SpringLayout.SOUTH, searchResetButton);
+
+
         controlPanel.add(speedLabel);
         controlPanel.add(speedSlider);
         controlPanel.add(searchButton);
@@ -158,17 +198,27 @@ public class Main extends JFrame implements ChangeListener {
         this.traversalGraphsContainerPanel = new TraversalGraphsContainerPanel(this);
         JPanel containerPanel = new JPanel(new GridLayout(0, 1));
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new FlowLayout());
+        SpringLayout sl = new SpringLayout();
+        controlPanel.setLayout(sl);
 
-        traversalDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.traversalGraphsContainerPanel, controlPanel);
+        traversalDivider = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.traversalGraphsContainerPanel, controlPanel);
         traversalDivider.setDividerLocation(450);
         containerPanel.add(traversalDivider, BorderLayout.CENTER);
 
-        JLabel speedLabel = new JLabel("Speed: ");
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
-        speedSlider.setName("traverse_speed");
-        this.traversalGraphsContainerPanel.setSpeed(50);
-        speedSlider.addChangeListener(this);
+
+        JLabel edgeLabel = new JLabel("Edges: ");
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
+        edgeSlider.setName("traverse_edges");
+        this.traversalGraphsContainerPanel.setEdgesNumber(10);
+        edgeSlider.addChangeListener(this);
+
+        sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, edgeLabel, -13, SpringLayout.SOUTH, controlPanel);
+
+        sl.putConstraint(SpringLayout.WEST, edgeSlider, 5, SpringLayout.EAST, edgeLabel);
+        sl.putConstraint(SpringLayout.EAST, edgeSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, edgeSlider, -5, SpringLayout.SOUTH, controlPanel);
+
 
         JLabel nodesLabel = new JLabel("Nodes: ");
         JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
@@ -176,11 +226,27 @@ public class Main extends JFrame implements ChangeListener {
         this.traversalGraphsContainerPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
-        JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
-        edgeSlider.setName("traverse_edges");
-        this.traversalGraphsContainerPanel.setEdgesNumber(10);
-        edgeSlider.addChangeListener(this);
+        sl.putConstraint(SpringLayout.WEST, nodesLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, nodesLabel, -8, SpringLayout.NORTH, edgeSlider);
+
+        sl.putConstraint(SpringLayout.WEST, nodesSlider, 5, SpringLayout.EAST, nodesLabel);
+        sl.putConstraint(SpringLayout.EAST, nodesSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, nodesSlider, 0, SpringLayout.NORTH, edgeSlider);
+
+
+        JLabel speedLabel = new JLabel("Speed: ");
+        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
+        speedSlider.setName("traverse_speed");
+        this.traversalGraphsContainerPanel.setSpeed(50);
+        speedSlider.addChangeListener(this);
+
+        sl.putConstraint(SpringLayout.WEST, speedLabel, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, speedLabel, -23, SpringLayout.NORTH, nodesSlider);
+
+        sl.putConstraint(SpringLayout.WEST, speedSlider, 5, SpringLayout.EAST, speedLabel);
+        sl.putConstraint(SpringLayout.EAST, speedSlider, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.SOUTH, speedSlider, -15, SpringLayout.NORTH, nodesSlider);
+
 
         // buttons
         traverseResetButton = new JButton("Reset");
@@ -216,6 +282,19 @@ public class Main extends JFrame implements ChangeListener {
                 traverseNewGraphButton.setEnabled(false);
             }
         });
+
+        sl.putConstraint(SpringLayout.WEST, traverseButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, traverseButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, traverseButton, 5, SpringLayout.NORTH, controlPanel);
+
+        sl.putConstraint(SpringLayout.WEST, traverseResetButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, traverseResetButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, traverseResetButton, 25, SpringLayout.SOUTH, traverseButton);
+
+        sl.putConstraint(SpringLayout.WEST, traverseNewGraphButton, 5, SpringLayout.WEST, controlPanel);
+        sl.putConstraint(SpringLayout.EAST, traverseNewGraphButton, -5, SpringLayout.EAST, controlPanel);
+        sl.putConstraint(SpringLayout.NORTH, traverseNewGraphButton, 5, SpringLayout.SOUTH, traverseResetButton);
+
 
         controlPanel.add(speedLabel);
         controlPanel.add(speedSlider);
@@ -267,8 +346,8 @@ public class Main extends JFrame implements ChangeListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        traversalDivider.setDividerLocation((getSize().getHeight() * 0.9) / getSize().getHeight());
-        searchDivider.setDividerLocation((getSize().getHeight() * 0.9) / getSize().getHeight());
+        traversalDivider.setDividerLocation((int)(getSize().getWidth()-180));
+        searchDivider.setDividerLocation((int)(getSize().getWidth()-180));
     }
 
 
