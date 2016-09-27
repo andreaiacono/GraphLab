@@ -14,6 +14,7 @@ In the Search tab there are four panels:
 * BFS (Breadth First Search)
 * UCS (Uniform Cost Search)
 * A*
+
 Pressing the button "Search" will start the searches and will show the different approaches.
 
 The UCS algorithm uses the geometric distance between a node and another as the cost; the A* algorithm uses the distance from the current node to the searched node as the heuristic function. 
