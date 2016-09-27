@@ -15,6 +15,7 @@ In the Search tab there are four panels:
 * UCS (Uniform Cost Search)
 * A*
 Pressing the button "Search" will start the searches and will shoe the different approaches.
+The UCS algorithm uses the geometric distance between a node and another as the cost; the A* algorithm uses the distance from the current node to the searched node as the heuristic function. 
 
 In the panel representing the graphs, is possible to move nodes by pressing the mouse button and also to popup a menu for setting starting and searched nodes.
 
