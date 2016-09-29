@@ -121,9 +121,8 @@ public class GraphSearch {
                 Node child = edge.getDestination();
 
                 int oldChildCost = child.getPathCost();
-                int edgeCost = GraphUtils.getDistance(currentNode, child);
                 int heuristicCost = useHeuristic ? GraphUtils.getDistance(searchedNode.get(), child) : 0;
-                child.setPathCost(currentNode.getPathCost() + edgeCost + heuristicCost);
+                child.setPathCost(currentNode.getPathCost() + edge.getCost() + heuristicCost);
 
                 if ((edge.getDestination()).getStatus() == NodeStatus.UNKNOWN) {
                     queue.add(edge.getDestination());
