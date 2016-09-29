@@ -1,10 +1,12 @@
-package graphlab.gui;
+package graphlab.gui.search;
 
-import graphlab.algorithms.GraphSearch;
+import graphlab.algorithms.Search;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
 import graphlab.datastructures.SearchType;
+import graphlab.gui.GraphContainerPanel;
+import graphlab.gui.GraphPanel;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
@@ -100,16 +102,16 @@ public class GraphSearchPanel extends GraphPanel {
 
             switch (searchType) {
                 case BFS:
-                    GraphSearch.bfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
+                    Search.bfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
                     break;
                 case DFS:
-                    GraphSearch.dfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
+                    Search.dfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
                     break;
                 case UCS:
-                    GraphSearch.ucs(graph, visitNode, visitEdge, processNode, isCanceled);
+                    Search.ucs(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
                 case ASTAR:
-                    GraphSearch.astar(graph, visitNode, visitEdge, processNode, isCanceled);
+                    Search.astar(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
 

@@ -1,7 +1,9 @@
-package graphlab.gui;
+package graphlab.gui.search;
 
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.SearchType;
+import graphlab.gui.GraphContainerPanel;
+import graphlab.gui.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +15,11 @@ public class SearchGraphsContainerPanel extends GraphContainerPanel {
     private final GraphSearchPanel dfsGraph;
     private final GraphSearchPanel ucsGraph;
     private final GraphSearchPanel aStarGraph;
+    private SearchPanel searchPanel;
 
-    public SearchGraphsContainerPanel(Main main) {
+    public SearchGraphsContainerPanel(Main main, SearchPanel searchPanel) {
         super(main);
+        this.searchPanel = searchPanel;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -42,8 +46,8 @@ public class SearchGraphsContainerPanel extends GraphContainerPanel {
 
     @Override
     public void setOperationAsFinished() {
-
-        main.setSearchAsFinished();
+        searchPanel.setSearchAsFinished();
     }
+
 }
 

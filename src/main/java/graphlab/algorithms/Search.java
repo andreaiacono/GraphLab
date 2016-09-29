@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class GraphSearch {
+public class Search {
 
     public static void bfs(Graph graph,
                            Consumer<Node> onVisitedNode,
@@ -62,15 +62,12 @@ public class GraphSearch {
 
         graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
         Deque<Node> queue = new ArrayDeque<>();
-        Optional<Node> startingNode = graph.getNodes().stream().filter(node -> node.isStartNode()).findFirst();
-        if (!startingNode.isPresent()) {
-            return;
-        }
-        nodePutter.accept(queue, startingNode.get());
+        Node startingNode = GraphUtils.getStartingNode(graph);
+        nodePutter.accept(queue, startingNode);
 
         while (!queue.isEmpty()) {
             Node node = nodeGetter.apply(queue);
-            if (stopAtSearched && node.isSearchedNode()) {
+            if (stopAtSearched && node.isTargetNode()) {
                 return;
             }
             node.setStatus(NodeStatus.DISCOVERED);
@@ -99,19 +96,16 @@ public class GraphSearch {
     public static void genericCostSearch(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled, boolean useHeuristic) throws Exception {
         graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
         PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> Integer.compare(o1.getPathCost(), o2.getPathCost()));
-        Optional<Node> startingNode = graph.getNodes().stream().filter(node -> node.isStartNode()).findFirst();
-        Optional<Node> searchedNode = graph.getNodes().stream().filter(node -> node.isSearchedNode()).findFirst();
-        if (!startingNode.isPresent() || !searchedNode.isPresent()) {
-            return;
-        }
+        Node startingNode = GraphUtils.getStartingNode(graph);
+        Node targetNode = GraphUtils.getTargetNode(graph);
 
         graph.getNodes().forEach(node -> node.setPathCost(Integer.MAX_VALUE));
-        startingNode.get().setPathCost(0);
-        queue.add(startingNode.get());
+        startingNode.setPathCost(0);
+        queue.add(startingNode);
 
         while (!queue.isEmpty()) {
             Node currentNode = queue.poll();
-            if (currentNode.isSearchedNode()) {
+            if (currentNode.isTargetNode()) {
                 return;
             }
             currentNode.setStatus(NodeStatus.DISCOVERED);
@@ -121,7 +115,7 @@ public class GraphSearch {
                 Node child = edge.getDestination();
 
                 int oldChildCost = child.getPathCost();
-                int heuristicCost = useHeuristic ? GraphUtils.getDistance(searchedNode.get(), child) : 0;
+                int heuristicCost = useHeuristic ? GraphUtils.getDistance(targetNode, child) : 0;
                 child.setPathCost(currentNode.getPathCost() + edge.getCost() + heuristicCost);
 
                 if ((edge.getDestination()).getStatus() == NodeStatus.UNKNOWN) {

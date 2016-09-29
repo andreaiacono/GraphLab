@@ -1,6 +1,7 @@
 package graphlab.utils;
 
 import graphlab.datastructures.AdjacencyListGraph;
+import graphlab.datastructures.Graph;
 import graphlab.datastructures.Node;
 
 import java.util.Random;
@@ -63,7 +64,7 @@ public class GraphUtils {
         }
 
         int index = 1 + new Random().nextInt(nodesNumber - 1);
-        graph.getNodes().get(index).setSearchedNode(true);
+        graph.getNodes().get(index).setTargetNode(true);
 
         return graph;
     }
@@ -72,5 +73,13 @@ public class GraphUtils {
     public static int getDistance(Node start, Node end) {
         // we don't need an euclidean distance, so there's no Math.sqrt()
         return (int) (Math.pow(Math.abs(start.getX() - end.getX()),2) + Math.pow(Math.abs(start.getY() - end.getY()),2));
+    }
+
+    public static Node getStartingNode(Graph graph) throws Exception {
+        return graph.getNodes().stream().filter(Node::isStartNode).findFirst().orElseThrow(() -> new Exception("Starting node not present."));
+    }
+
+    public static Node getTargetNode(Graph graph) throws Exception {
+        return graph.getNodes().stream().filter(Node::isTargetNode).findFirst().orElseThrow(() -> new Exception("Target node not present."));
     }
 }

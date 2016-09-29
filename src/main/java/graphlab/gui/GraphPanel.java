@@ -32,7 +32,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     protected List<Node> processedNodes = new ArrayList<>();
     protected int panelSide;
     private int speed;
-    protected boolean isFinished;
+    public boolean isFinished;
     int nodeSize;
     protected double mf;
 
@@ -103,7 +103,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         if (node.isStartNode()) {
             color = Color.GREEN;
         }
-        else if (node.isSearchedNode() && hasSearchedNode) {
+        else if (node.isTargetNode() && hasSearchedNode) {
             color = Color.CYAN;
         }
         else {
@@ -175,8 +175,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         }
         else if (e.getActionCommand().equals(SET_SEARCHED_NODE_LABEL)) {
             Node clickedNode = graph.getNodes().stream().filter(node -> node.getX() == clickedNodeX && node.getY() == clickedNodeY).findFirst().get();
-            graph.getNodes().forEach(node -> node.setSearchedNode(false));
-            clickedNode.setSearchedNode(true);
+            graph.getNodes().forEach(node -> node.setTargetNode(false));
+            clickedNode.setTargetNode(true);
         }
 
 
@@ -235,7 +235,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
 
     public abstract void stopOperation();
 
-    class PopupListener extends MouseAdapter {
+    public class PopupListener extends MouseAdapter {
 
         public void mousePressed(MouseEvent e) {
             clickedNode = getClickedNodeFromCoords(e.getX(), e.getY());

@@ -12,7 +12,7 @@ public abstract class GraphContainerPanel extends JPanel {
     protected Main main;
     protected int edgesNumber = 8;
     protected int nodesNumber = 100;
-    protected List<GraphPanel> graphPanels;
+    public List<GraphPanel> graphPanels;
     protected AdjacencyListGraph graph;
 
     public GraphContainerPanel(Main main) {

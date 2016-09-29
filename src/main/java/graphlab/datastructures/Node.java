@@ -12,7 +12,7 @@ public class Node {
     private NodeStatus status;
     private List<Edge> edges = new ArrayList<>();
     private boolean isStartNode = false;
-    private boolean isSearchedNode = false;
+    private boolean isTargetNode = false;
 
     public Node(Node node) {
         this.key = node.getKey();
@@ -20,7 +20,7 @@ public class Node {
         this.y= node.getY();
         this.status = node.getStatus();
         this.isStartNode = node.isStartNode();
-        this.isSearchedNode = node.isSearchedNode();
+        this.isTargetNode = node.isTargetNode();
     }
 
     public Node(int index, int x, int y) {
@@ -87,12 +87,12 @@ public class Node {
     public void setStartNode(boolean startNode) {
         isStartNode = startNode;
     }
-    public void setSearchedNode(boolean endNode) {
-        isSearchedNode = endNode;
+    public void setTargetNode(boolean endNode) {
+        isTargetNode = endNode;
     }
 
-    public boolean isSearchedNode() {
-        return isSearchedNode;
+    public boolean isTargetNode() {
+        return isTargetNode;
     }
 
     public void setX(int x) {

@@ -1,7 +1,9 @@
-package graphlab.gui;
+package graphlab.gui.traversal;
 
-import graphlab.algorithms.GraphSearch;
+import graphlab.algorithms.Search;
 import graphlab.datastructures.*;
+import graphlab.gui.GraphContainerPanel;
+import graphlab.gui.GraphPanel;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
@@ -79,10 +81,10 @@ public class GraphTraversalPanel extends GraphPanel {
 
             switch (searchType) {
                 case BFS:
-                    GraphSearch.bfs(graph, visitNode, visitEdge, processNode, isCanceled, false);
+                    Search.bfs(graph, visitNode, visitEdge, processNode, isCanceled, false);
                     break;
                 case DFS:
-                    GraphSearch.dfs(graph, visitNode, visitEdge, processNode, isCanceled, false);
+                    Search.dfs(graph, visitNode, visitEdge, processNode, isCanceled, false);
                     break;
             }
 
