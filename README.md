@@ -6,7 +6,7 @@ It now has two tabs:
 * Search
 
 ### Traversal tab
-In the Traversal tab there two panels, one for DFS and the other for BFS. Pressing the button "Traverse" will start the searches and will shoe the different approaches.
+In the Traversal tab there two panels, one for DFS and the other for BFS. Pressing the button "Traverse" will start the searches and will show the different approaches.
 
 ### Search tab
 In the Search tab there are four panels:

@@ -11,6 +11,7 @@ import java.util.List;
 
 public abstract class GraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
 
+    private static final Font ALGORITHM_NAME_FONT = new Font("Arial", Font.BOLD, 14);
     private static final Font[] KEY_FONT = new Font[30];
     static {
         for (int j = 0; j < KEY_FONT.length; j++) {
@@ -72,6 +73,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         // makes a local copy of data to avoid concurrent modifications
         List<Edge> edges = new ArrayList<>(visitedEdges);
 
+        // FIXME: changing size a part of the graph is lost over the border!
         mf = getPreferredSize().getHeight() / 600;
         Graphics2D g2 = (Graphics2D) g;
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
@@ -87,8 +89,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
         g.setColor(Color.BLACK);
-        g.drawString(searchType.getName(), 5, 15);
-
+        g.setFont(ALGORITHM_NAME_FONT);
+        g.drawString(searchType.toString(), 5, 15);
     }
 
     private void drawColoredNode(Graphics g, double mf, Node node) {

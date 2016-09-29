@@ -1,15 +1,20 @@
 package graphlab.datastructures;
 
 public enum SearchType {
-    DFS("DFS"), BFS("BFS"), UCS("UCS"), ASTAR("A*"), GREEDY("Greedy");
-
-    private final String name;
-
-    SearchType(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    DFS,
+    BFS,
+    UCS,
+    ASTAR {
+        @Override
+        public String toString() {
+            return "A*";
+        }
+    },
+    GREEDY {
+        @Override
+        public String toString() {
+            return "Greedy";
+        }
     }
 }
+

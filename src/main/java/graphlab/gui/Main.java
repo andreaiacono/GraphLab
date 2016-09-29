@@ -33,7 +33,7 @@ public class Main extends JFrame implements ChangeListener {
 
         super("GraphLab");
 
-        setSize(900, 600);
+        setSize(1000, 510);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
