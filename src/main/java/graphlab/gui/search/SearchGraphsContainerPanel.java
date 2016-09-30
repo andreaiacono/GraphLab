@@ -17,8 +17,8 @@ public class SearchGraphsContainerPanel extends GraphContainerPanel {
     private final GraphSearchPanel aStarGraph;
     private SearchPanel searchPanel;
 
-    public SearchGraphsContainerPanel(Main main, SearchPanel searchPanel) {
-        super(main);
+    public SearchGraphsContainerPanel(Main main, SearchPanel searchPanel, int nodesNumber, int edgesNumber) {
+        super(main, nodesNumber, edgesNumber);
         this.searchPanel = searchPanel;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));

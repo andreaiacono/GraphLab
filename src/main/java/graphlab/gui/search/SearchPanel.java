@@ -16,6 +16,8 @@ public class SearchPanel extends JPanel implements ChangeListener, ComponentList
     private final JButton searchNewGraphButton;
     private final JButton searchButton;
     private Main main;
+    private final int DEFAULT_NODES_NUMBER = 100;
+    private final int DEFAULT_EDGES_NUMBER = 10;
 
     // contains the graph panels
     private final SearchGraphsContainerPanel searchGraphsContainerPanel;
@@ -24,7 +26,7 @@ public class SearchPanel extends JPanel implements ChangeListener, ComponentList
         this.main = main;
         addComponentListener(this);
 
-        searchGraphsContainerPanel = new SearchGraphsContainerPanel(main, this);
+        searchGraphsContainerPanel = new SearchGraphsContainerPanel(main, this, DEFAULT_NODES_NUMBER, DEFAULT_EDGES_NUMBER);
 
         // control and drawing panels
         setLayout(new GridLayout(0, 1));
@@ -37,9 +39,8 @@ public class SearchPanel extends JPanel implements ChangeListener, ComponentList
         add(searchDivider, BorderLayout.CENTER);
 
         JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, DEFAULT_EDGES_NUMBER);
         edgeSlider.setName("search_edges");
-        searchGraphsContainerPanel.setEdgesNumber(10);
         edgeSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, controlPanel);
@@ -51,9 +52,8 @@ public class SearchPanel extends JPanel implements ChangeListener, ComponentList
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
-        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
+        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, DEFAULT_NODES_NUMBER);
         nodesSlider.setName("search_nodes");
-        searchGraphsContainerPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, nodesLabel, 5, SpringLayout.WEST, controlPanel);
@@ -110,7 +110,7 @@ public class SearchPanel extends JPanel implements ChangeListener, ComponentList
                 searchResetButton.setEnabled(false);
                 searchNewGraphButton.setEnabled(false);
                 repaint();
-                searchGraphsContainerPanel.search();
+                searchGraphsContainerPanel.start();
             }
         });
 

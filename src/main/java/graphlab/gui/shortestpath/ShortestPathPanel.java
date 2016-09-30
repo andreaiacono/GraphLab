@@ -16,6 +16,8 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
     private final JButton newGraphButton;
     private final JButton shortestPath;
     private Main main;
+    private final int DEFAULT_NODES_NUMBER = 20;
+    private final int DEFAULT_EDGES_NUMBER = 6;
 
     // contains the graph panels
     private final ShortestPathContainerPanel shortestPathContainerPanel;
@@ -24,7 +26,7 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
         this.main = main;
         addComponentListener(this);
 
-        shortestPathContainerPanel = new ShortestPathContainerPanel(main, this);
+        shortestPathContainerPanel = new ShortestPathContainerPanel(main, this, DEFAULT_NODES_NUMBER, DEFAULT_EDGES_NUMBER);
 
         // control and drawing panels
         setLayout(new GridLayout(0, 1));
@@ -37,9 +39,8 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
         add(divider, BorderLayout.CENTER);
 
         JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 40);
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, DEFAULT_EDGES_NUMBER);
         edgeSlider.setName("edges");
-        shortestPathContainerPanel.setEdgesNumber(40);
         edgeSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, controlPanel);
@@ -51,9 +52,8 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
-        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 150);
+        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, DEFAULT_NODES_NUMBER);
         nodesSlider.setName("nodes");
-        shortestPathContainerPanel.setNodesNumber(150);
         nodesSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, nodesLabel, 5, SpringLayout.WEST, controlPanel);
@@ -90,6 +90,9 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
         newGraphButton.addActionListener(e -> {
             shortestPathContainerPanel.newGraph();
             main.setProgressBar(0);
+            // FIXME: set the border when creatign a new graph
+//            setBorder(WORKING_BORDER);
+            shortestPathContainerPanel.newGraph();
             repaint();
         });
 
@@ -110,7 +113,7 @@ public class ShortestPathPanel extends JPanel implements ChangeListener, Compone
                 resetButton.setEnabled(false);
                 newGraphButton.setEnabled(false);
                 repaint();
-                shortestPathContainerPanel.search();
+                shortestPathContainerPanel.start();
             }
         });
 

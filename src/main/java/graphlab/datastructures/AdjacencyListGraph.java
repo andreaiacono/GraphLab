@@ -1,7 +1,10 @@
 package graphlab.datastructures;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AdjacencyListGraph extends Graph {
 
@@ -13,6 +16,11 @@ public class AdjacencyListGraph extends Graph {
     }
 
     public AdjacencyListGraph() {
+    }
+
+    @Override
+    public Set<Edge> getEdges() {
+        return nodes.stream().flatMap(node -> node.getEdges().stream()).collect(Collectors.toSet());
     }
 
     @Override

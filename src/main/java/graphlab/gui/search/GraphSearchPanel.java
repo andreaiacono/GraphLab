@@ -19,8 +19,6 @@ import java.util.function.Consumer;
 
 public class GraphSearchPanel extends GraphPanel {
 
-    private Border WORKING_BORDER = BorderFactory.createEtchedBorder();
-    private Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
     private GraphSearchWorker searchWorker;
 
     public GraphSearchPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {

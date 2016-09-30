@@ -4,6 +4,7 @@ import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
 import graphlab.algorithms.Algorithm;
+import graphlab.datastructures.NodeStatus;
 import graphlab.gui.GraphContainerPanel;
 import graphlab.gui.GraphPanel;
 import graphlab.utils.ConsumerWithException;
@@ -14,7 +15,9 @@ import java.awt.*;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GraphShortestPathPanel extends GraphPanel {
 
@@ -45,7 +48,8 @@ public class GraphShortestPathPanel extends GraphPanel {
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
-        graph.getNodes().forEach(node -> { node.setParentForShortestPath(null);node.getEdges().forEach(edge -> edge.recomputeCost());});
+        bellmanFordStep = 0;
+        graph.getNodes().forEach(node -> { node.setParentForShortestPath(null); node.setStatus(NodeStatus.UNKNOWN); node.getEdges().forEach(edge -> edge.recomputeCost());});
         repaint();
         this.isFinished = false;
         shortestPathWorker = new ShortestPathWorker(visitedNodes, visitedEdges, processedNodes);
@@ -63,7 +67,7 @@ public class GraphShortestPathPanel extends GraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = parentPanel.getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
@@ -71,6 +75,7 @@ public class GraphShortestPathPanel extends GraphPanel {
     public void stopOperation() {
         setBorder(WORKING_BORDER);
         shortestPathWorker.cancel(true);
+        bellmanFordStep = 0;
     }
 
     class ShortestPathWorker extends SwingWorker<Void, Void> {
@@ -99,9 +104,18 @@ public class GraphShortestPathPanel extends GraphPanel {
                 visitedEdges.add(edge);
                 updateGraph();
             };
+            Callable startingCheck = () -> {
+                visitedEdges.clear();
+                bellmanFordStep++;
+                return null;
+            };
+
             switch (algorithm) {
                 case DIJKSTRA:
                     graphlab.algorithms.ShortestPath.dijkstra(graph, visitNode, visitEdge, processNode, isCanceled);
+                    break;
+                case BELLMANFORD:
+                    graphlab.algorithms.ShortestPath.bellmanFord(graph, visitNode, visitEdge, processNode, startingCheck, isCanceled);
                     break;
             }
 

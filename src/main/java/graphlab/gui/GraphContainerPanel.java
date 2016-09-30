@@ -10,13 +10,16 @@ import javax.swing.*;
 public abstract class GraphContainerPanel extends JPanel {
 
     protected Main main;
-    protected int edgesNumber = 8;
-    protected int nodesNumber = 100;
+    protected int edgesNumber;
+    protected int nodesNumber;
     public List<GraphPanel> graphPanels;
     protected AdjacencyListGraph graph;
 
-    public GraphContainerPanel(Main main) {
+    public GraphContainerPanel(Main main, int nodesNumber, int edgesNumber) {
         this.main = main;
+        this.nodesNumber = nodesNumber;
+        this.edgesNumber = edgesNumber;
+
         graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500, true);
         graphPanels = new ArrayList<>();
     }
@@ -44,7 +47,7 @@ public abstract class GraphContainerPanel extends JPanel {
         graphPanels.forEach(panel -> panel.reset());
     }
 
-    public void search() {
+    public void start() {
         graphPanels.forEach(panel -> panel.startOperation());
     }
 

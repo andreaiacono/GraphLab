@@ -14,8 +14,8 @@ public class TraversalGraphsContainerPanel extends GraphContainerPanel {
     private final GraphPanel dfsGraph;
     private TraversalPanel traversalPanel;
 
-    public TraversalGraphsContainerPanel(Main main, TraversalPanel traversalPanel) {
-        super(main);
+    public TraversalGraphsContainerPanel(Main main, TraversalPanel traversalPanel, int nodesNumber, int edgesNumber) {
+        super(main, nodesNumber, edgesNumber);
         this.traversalPanel = traversalPanel;
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);

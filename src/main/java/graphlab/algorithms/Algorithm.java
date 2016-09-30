@@ -10,7 +10,17 @@ public enum Algorithm {
             return "A*";
         }
     },
-    GREEDY,
-    DIJKSTRA
+    DIJKSTRA {
+        @Override
+        public String toString() {
+            return "Dijkstra";
+        }
+    },
+    BELLMANFORD {
+        @Override
+        public String toString() {
+            return "Bellman-Ford";
+        }
+    }
 }
 

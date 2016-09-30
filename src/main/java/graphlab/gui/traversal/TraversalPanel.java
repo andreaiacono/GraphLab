@@ -16,6 +16,8 @@ public class TraversalPanel extends JPanel implements ChangeListener, ComponentL
     private final JButton traverseNewGraphButton;
     private final JButton traverseButton;
     private Main main;
+    private final int DEFAULT_NODES_NUMBER = 150;
+    private final int DEFAULT_EDGES_NUMBER = 10;
 
     // contains the graph panels
     private final TraversalGraphsContainerPanel traversalGraphsContainerPanel;
@@ -26,7 +28,7 @@ public class TraversalPanel extends JPanel implements ChangeListener, ComponentL
         addComponentListener(this);
 
         // control and drawing panels
-        traversalGraphsContainerPanel = new TraversalGraphsContainerPanel(main, this);
+        traversalGraphsContainerPanel = new TraversalGraphsContainerPanel(main, this, DEFAULT_NODES_NUMBER, DEFAULT_EDGES_NUMBER);
         setLayout(new GridLayout(0, 1));
         JPanel controlPanel = new JPanel();
         SpringLayout sl = new SpringLayout();
@@ -37,9 +39,8 @@ public class TraversalPanel extends JPanel implements ChangeListener, ComponentL
         add(traversalDivider, BorderLayout.CENTER);
 
         JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, 10);
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, DEFAULT_EDGES_NUMBER);
         edgeSlider.setName("traverse_edges");
-        traversalGraphsContainerPanel.setEdgesNumber(10);
         edgeSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, controlPanel);
@@ -51,9 +52,8 @@ public class TraversalPanel extends JPanel implements ChangeListener, ComponentL
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
-        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, 100);
+        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, DEFAULT_NODES_NUMBER);
         nodesSlider.setName("traverse_nodes");
-        traversalGraphsContainerPanel.setNodesNumber(100);
         nodesSlider.addChangeListener(this);
 
         sl.putConstraint(SpringLayout.WEST, nodesLabel, 5, SpringLayout.WEST, controlPanel);
@@ -107,7 +107,7 @@ public class TraversalPanel extends JPanel implements ChangeListener, ComponentL
             else {
                 main.setStatusBarMessage("Traversing in progress..");
                 traverseButton.setText("Stop");
-                traversalGraphsContainerPanel.search();
+                traversalGraphsContainerPanel.start();
                 traverseResetButton.setEnabled(false);
                 traverseNewGraphButton.setEnabled(false);
             }
