@@ -71,8 +71,7 @@ public class GraphUtils {
 
 
     public static int getDistance(Node start, Node end) {
-        // we don't need an euclidean distance, so there's no Math.sqrt()
-        return (int) (Math.pow(Math.abs(start.getX() - end.getX()),2) + Math.pow(Math.abs(start.getY() - end.getY()),2));
+        return (int) (Math.sqrt(Math.pow(Math.abs(start.getX() - end.getX()),2) + Math.pow(Math.abs(start.getY() - end.getY()),2)));
     }
 
     public static Node getStartingNode(Graph graph) throws Exception {

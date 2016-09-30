@@ -4,6 +4,7 @@ import graphlab.algorithms.Search;
 import graphlab.datastructures.*;
 import graphlab.gui.GraphContainerPanel;
 import graphlab.gui.GraphPanel;
+import graphlab.algorithms.Algorithm;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
@@ -17,9 +18,9 @@ public class GraphTraversalPanel extends GraphPanel {
 
     private GraphTraversalWorker traversalWorker;
 
-    public GraphTraversalPanel(SearchType searchType, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
-        super(searchType, parentPanel, graph, false);
-        this.searchType = searchType;
+    public GraphTraversalPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
+        super(algorithm, parentPanel, graph, false);
+        this.algorithm = algorithm;
         this.parentPanel = parentPanel;
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
@@ -79,7 +80,7 @@ public class GraphTraversalPanel extends GraphPanel {
                 updateGraph();
             };
 
-            switch (searchType) {
+            switch (algorithm) {
                 case BFS:
                     Search.bfs(graph, visitNode, visitEdge, processNode, isCanceled, false);
                     break;

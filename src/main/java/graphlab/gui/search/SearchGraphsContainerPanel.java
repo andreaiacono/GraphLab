@@ -1,7 +1,7 @@
 package graphlab.gui.search;
 
+import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
-import graphlab.datastructures.SearchType;
 import graphlab.gui.GraphContainerPanel;
 import graphlab.gui.Main;
 
@@ -24,19 +24,19 @@ public class SearchGraphsContainerPanel extends GraphContainerPanel {
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        dfsGraph = new GraphSearchPanel(SearchType.DFS, this, new AdjacencyListGraph(graph));
+        dfsGraph = new GraphSearchPanel(Algorithm.DFS, this, new AdjacencyListGraph(graph));
         row1.add(dfsGraph);
         graphPanels.add(dfsGraph);
 
-        bfsGraph = new GraphSearchPanel(SearchType.BFS, this, new AdjacencyListGraph(graph));
+        bfsGraph = new GraphSearchPanel(Algorithm.BFS, this, new AdjacencyListGraph(graph));
         graphPanels.add(bfsGraph);
         row1.add(bfsGraph);
 
-        ucsGraph = new GraphSearchPanel(SearchType.UCS, this, new AdjacencyListGraph(graph));
+        ucsGraph = new GraphSearchPanel(Algorithm.UCS, this, new AdjacencyListGraph(graph));
         graphPanels.add(ucsGraph);
         row2.add(ucsGraph);
 
-        aStarGraph = new GraphSearchPanel(SearchType.ASTAR, this, new AdjacencyListGraph(graph));
+        aStarGraph = new GraphSearchPanel(Algorithm.ASTAR, this, new AdjacencyListGraph(graph));
         graphPanels.add(aStarGraph);
         row2.add(aStarGraph);
 

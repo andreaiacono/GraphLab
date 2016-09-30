@@ -1,7 +1,7 @@
 package graphlab.datastructures;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Node {
 
@@ -10,9 +10,10 @@ public class Node {
     private int y;
     private int pathCost;
     private NodeStatus status;
-    private List<Edge> edges = new ArrayList<>();
+    private Set<Edge> edges = new HashSet<>();
     private boolean isStartNode = false;
     private boolean isTargetNode = false;
+    private Node parentForShortestPath;
 
     public Node(Node node) {
         this.key = node.getKey();
@@ -60,7 +61,7 @@ public class Node {
         return key;
     }
 
-    public List<Edge> getEdges() {
+    public Set<Edge> getEdges() {
         return edges;
     }
 
@@ -110,12 +111,20 @@ public class Node {
         this.pathCost = pathCost;
     }
 
+    public Node getParentForShortestPath() {
+        return parentForShortestPath;
+    }
+
+    public void setParentForShortestPath(Node parentForShortestPath) {
+        this.parentForShortestPath = parentForShortestPath;
+    }
+
     @Override
     public String toString() {
-        return "Node [" + key + "] (" + x + "," + y + ")";
+        return "Node [" + key + "] (" + x + "," + y + ") - Cost= " + getPathCost();
     }
 
     public String toString(int distanceFromNode) {
-        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromNode + ")";
+        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromNode + "  " + (parentForShortestPath != null ? "parent: " + parentForShortestPath : "Not on shortest path");
     }
 }

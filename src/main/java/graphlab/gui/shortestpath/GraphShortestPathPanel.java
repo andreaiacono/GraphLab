@@ -1,10 +1,9 @@
-package graphlab.gui.search;
+package graphlab.gui.shortestpath;
 
-import graphlab.algorithms.Search;
-import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
+import graphlab.algorithms.Algorithm;
 import graphlab.gui.GraphContainerPanel;
 import graphlab.gui.GraphPanel;
 import graphlab.utils.ConsumerWithException;
@@ -17,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GraphSearchPanel extends GraphPanel {
+public class GraphShortestPathPanel extends GraphPanel {
 
     private Border WORKING_BORDER = BorderFactory.createEtchedBorder();
     private Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
-    private GraphSearchWorker searchWorker;
+    private ShortestPathWorker shortestPathWorker;
 
-    public GraphSearchPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
+    public GraphShortestPathPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
         super(algorithm, parentPanel, graph, true);
         this.algorithm = algorithm;
         this.parentPanel = parentPanel;
@@ -46,10 +45,11 @@ public class GraphSearchPanel extends GraphPanel {
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
+        graph.getNodes().forEach(node -> { node.setParentForShortestPath(null);node.getEdges().forEach(edge -> edge.recomputeCost());});
         repaint();
         this.isFinished = false;
-        searchWorker = new GraphSearchWorker(visitedNodes, visitedEdges, processedNodes);
-        searchWorker.execute();
+        shortestPathWorker = new ShortestPathWorker(visitedNodes, visitedEdges, processedNodes);
+        shortestPathWorker.execute();
     }
 
     public void setOperationAsFinished() {
@@ -63,23 +63,23 @@ public class GraphSearchPanel extends GraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = parentPanel.getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width /2 - X_SHIFT : dimension.height/2 - Y_SHIFT;
+        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
 
     public void stopOperation() {
         setBorder(WORKING_BORDER);
-        searchWorker.cancel(true);
+        shortestPathWorker.cancel(true);
     }
 
-    class GraphSearchWorker extends SwingWorker<Void, Void> {
+    class ShortestPathWorker extends SwingWorker<Void, Void> {
 
         List<Node> visitedNodes;
         List<Edge> visitedEdges;
         List<Node> processedNodes;
 
-        public GraphSearchWorker(List<Node> visitedNodes, List<Edge> visitedEdges, List<Node> processedNodes) {
+        public ShortestPathWorker(List<Node> visitedNodes, List<Edge> visitedEdges, List<Node> processedNodes) {
             this.visitedNodes = visitedNodes;
             this.visitedEdges = visitedEdges;
             this.processedNodes = processedNodes;
@@ -99,19 +99,9 @@ public class GraphSearchPanel extends GraphPanel {
                 visitedEdges.add(edge);
                 updateGraph();
             };
-
             switch (algorithm) {
-                case BFS:
-                    Search.bfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
-                    break;
-                case DFS:
-                    Search.dfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
-                    break;
-                case UCS:
-                    Search.ucs(graph, visitNode, visitEdge, processNode, isCanceled);
-                    break;
-                case ASTAR:
-                    Search.astar(graph, visitNode, visitEdge, processNode, isCanceled);
+                case DIJKSTRA:
+                    graphlab.algorithms.ShortestPath.dijkstra(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
 

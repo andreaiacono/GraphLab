@@ -1,11 +1,10 @@
 package graphlab.gui.traversal;
 
 import graphlab.datastructures.AdjacencyListGraph;
-import graphlab.datastructures.SearchType;
+import graphlab.algorithms.Algorithm;
 import graphlab.gui.GraphContainerPanel;
 import graphlab.gui.GraphPanel;
 import graphlab.gui.Main;
-import graphlab.gui.traversal.GraphTraversalPanel;
 
 import java.awt.*;
 
@@ -20,10 +19,10 @@ public class TraversalGraphsContainerPanel extends GraphContainerPanel {
         this.traversalPanel = traversalPanel;
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
-        dfsGraph = new GraphTraversalPanel(SearchType.DFS, this, new AdjacencyListGraph(graph));
+        dfsGraph = new GraphTraversalPanel(Algorithm.DFS, this, new AdjacencyListGraph(graph));
         add(dfsGraph);
         graphPanels.add(dfsGraph);
-        bfsGraph = new GraphTraversalPanel(SearchType.BFS, this, new AdjacencyListGraph(graph));
+        bfsGraph = new GraphTraversalPanel(Algorithm.BFS, this, new AdjacencyListGraph(graph));
         add(bfsGraph);
         graphPanels.add(bfsGraph);
     }

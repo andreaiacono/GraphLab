@@ -6,8 +6,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
-public class SearchPanel extends JPanel implements ChangeListener {
+public class SearchPanel extends JPanel implements ChangeListener, ComponentListener {
 
     private final JSplitPane searchDivider;
     private final JButton searchResetButton;
@@ -20,6 +22,7 @@ public class SearchPanel extends JPanel implements ChangeListener {
 
     public SearchPanel(Main main) {
         this.main = main;
+        addComponentListener(this);
 
         searchGraphsContainerPanel = new SearchGraphsContainerPanel(main, this);
 
@@ -147,7 +150,6 @@ public class SearchPanel extends JPanel implements ChangeListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        searchDivider.setDividerLocation((int)(getSize().getWidth()-180));
     }
 
     @Override
@@ -165,4 +167,23 @@ public class SearchPanel extends JPanel implements ChangeListener {
     }
 
 
+    @Override
+    public void componentResized(ComponentEvent e) {
+        searchDivider.setDividerLocation((int)(getSize().getWidth()-180));
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
+    }
 }

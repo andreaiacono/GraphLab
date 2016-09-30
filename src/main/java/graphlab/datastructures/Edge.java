@@ -25,8 +25,31 @@ public class Edge {
         return cost;
     }
 
+    public void recomputeCost() {
+        this.cost = GraphUtils.getDistance(source, destination);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Edge edge = (Edge) o;
+
+        if (getSource() != null ? !getSource().equals(edge.getSource()) : edge.getSource() != null) return false;
+        return getDestination() != null ? getDestination().equals(edge.getDestination()) : edge.getDestination() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getSource() != null ? getSource().hashCode() : 0;
+        result = 31 * result + (getDestination() != null ? getDestination().hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
-        return "" + destination.getKey();
+        return "[" + source.getKey() + "] -> [" + destination.getKey() + "]";
     }
 }

@@ -6,8 +6,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
-public class TraversalPanel extends JPanel implements ChangeListener {
+public class TraversalPanel extends JPanel implements ChangeListener, ComponentListener {
 
     private final JSplitPane traversalDivider;
     private final JButton traverseResetButton;
@@ -21,6 +23,7 @@ public class TraversalPanel extends JPanel implements ChangeListener {
     public TraversalPanel(Main main) {
 
         this.main = main;
+        addComponentListener(this);
 
         // control and drawing panels
         traversalGraphsContainerPanel = new TraversalGraphsContainerPanel(main, this);
@@ -137,7 +140,6 @@ public class TraversalPanel extends JPanel implements ChangeListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        traversalDivider.setDividerLocation((int)(getSize().getWidth()-180));
     }
 
     @Override
@@ -161,4 +163,23 @@ public class TraversalPanel extends JPanel implements ChangeListener {
         traverseResetButton.setEnabled(true);
     }
 
+    @Override
+    public void componentResized(ComponentEvent e) {
+        traversalDivider.setDividerLocation((int)(getSize().getWidth()-180));
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
+    }
 }

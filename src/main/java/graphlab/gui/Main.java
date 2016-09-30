@@ -34,8 +34,8 @@ public class Main extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Traversal", new TraversalPanel(this));
         tabbedPane.addTab("Search", new SearchPanel(this));
+        tabbedPane.addTab("Shortest Path", new ShortestPathPanel(this));
         tabbedPane.addTab("Minimum Spanning Tree", new MinimumSpanningTreePanel());
-        tabbedPane.addTab("Shortest Path", new ShortestPathPanel());
         add(tabbedPane);
         add(createStatusPanel(), BorderLayout.SOUTH);
 
@@ -70,7 +70,7 @@ public class Main extends JFrame {
     }
 
     public void setProgressBar(int value) {
-        // show the progress for the faster of the methods
+        // avoids values to go back and forth
         if (progressBar.getValue() < value || value == 0) {
             progressBar.setValue(value);
             repaint();

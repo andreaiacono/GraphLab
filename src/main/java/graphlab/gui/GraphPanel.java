@@ -1,6 +1,7 @@
 package graphlab.gui;
 
 import graphlab.datastructures.*;
+import graphlab.algorithms.Algorithm;
 import graphlab.utils.GraphUtils;
 
 import javax.swing.*;
@@ -26,9 +27,10 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     protected GraphContainerPanel parentPanel;
     protected AdjacencyListGraph graph;
     private boolean hasSearchedNode;
-    protected SearchType searchType;
+    protected Algorithm algorithm;
     protected List<Node> visitedNodes = new ArrayList<>();
     protected List<Edge> visitedEdges = new ArrayList<>();
+    protected List<Edge> edgesOnPath = new ArrayList<>();
     protected List<Node> processedNodes = new ArrayList<>();
     protected int panelSide;
     private int speed;
@@ -44,8 +46,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     protected boolean isMousePressed;
     protected Node clickedNode;
 
-    public GraphPanel(SearchType searchType, GraphContainerPanel parentPanel, AdjacencyListGraph graph, boolean hasSearchedNode) {
-        this.searchType = searchType;
+    public GraphPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph, boolean hasSearchedNode) {
+        this.algorithm = algorithm;
         this.parentPanel = parentPanel;
         this.graph = graph;
         this.hasSearchedNode = hasSearchedNode;
@@ -56,6 +58,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         JMenuItem menuItem = new JMenuItem(SET_STARTING_NODE_LABEL);
         menuItem.addActionListener(this);
         popupMenu.add(menuItem);
+
     }
 
     public void setGraph(AdjacencyListGraph graph) {
@@ -63,6 +66,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
+        edgesOnPath = new ArrayList<>();
         repaint();
     }
 
@@ -79,18 +83,40 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
 
         float increment = 255 / (edges.size() != 0 ? new Float(edges.size()) : 255f);
-        float color = 0;
+        float colorShade = 0;
         g2.setStroke(new BasicStroke(3));
         for (Edge edge : edges) {
-            color += increment;
-            drawColoredEdge(g2, edge, mf, new Color((int) color, (int) color, 255));
+            Color color = Color.GRAY;
+            if (algorithm != Algorithm.DIJKSTRA) {
+                colorShade += increment;
+                color = new Color((int) colorShade, (int) colorShade, 255);
+            }
+            drawColoredEdge(g2, edge, mf, color);
         }
+
+        if (algorithm == Algorithm.DIJKSTRA) {
+           drawShortestPath(g2);
+        }
+
         g2.setStroke(new BasicStroke(1));
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
         g.setColor(Color.BLACK);
         g.setFont(ALGORITHM_NAME_FONT);
-        g.drawString(searchType.toString(), 5, 15);
+        g.drawString(algorithm.toString(), 5, 15);
+    }
+
+    private void drawShortestPath(Graphics2D g2) {
+        try {
+            Node currentNode = GraphUtils.getTargetNode(graph);
+            while (currentNode.getParentForShortestPath() != null) {
+                drawColoredEdge(g2, currentNode, currentNode.getParentForShortestPath(), mf, Color.GREEN);
+                currentNode = currentNode.getParentForShortestPath();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void drawColoredNode(Graphics g, double mf, Node node) {
@@ -110,7 +136,6 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
             color = nodeColor == null ? node.getStatus().color : nodeColor;
         }
 
-
         if (node == clickedNode) {
             color = new Color(0,100,200);
         }
@@ -126,9 +151,11 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     }
 
     private void drawColoredEdge(Graphics g, Edge edge, double mf, Color edgeColor) {
+        drawColoredEdge(g, edge.getSource(), edge.getDestination(), mf, edgeColor);
+    }
+
+    private void drawColoredEdge(Graphics g, Node sourceNode, Node destinationNode, double mf, Color edgeColor) {
         g.setColor(edgeColor);
-        Node sourceNode = edge.getSource();
-        Node destinationNode = edge.getDestination();
         g.drawLine(
                 (int) (sourceNode.getX() * mf) + X_SHIFT,
                 (int) (sourceNode.getY() * mf) + Y_SHIFT,
@@ -142,7 +169,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         visitedEdges = new ArrayList<>();
         processedNodes = new ArrayList<>();
         this.isFinished = false;
-        graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
+        graph.getNodes().forEach(node -> {node.setStatus(NodeStatus.UNKNOWN); node.setParentForShortestPath(null);});
         repaint();
     }
 
