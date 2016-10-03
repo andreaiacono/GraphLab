@@ -5,6 +5,7 @@ import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
 import graphlab.datastructures.NodeStatus;
+import graphlab.utils.Constants;
 import graphlab.utils.GraphUtils;
 
 import javax.swing.*;
@@ -14,15 +15,23 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
+import static graphlab.utils.Constants.X_SHIFT;
+import static graphlab.utils.Constants.Y_SHIFT;
 
+/**
+ * This is the generic square panel where the graph is drawn and animated.
+ */
+public abstract class GenericGraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
+
+    /** graphics rendering constants **/
     private static final Font ALGORITHM_NAME_FONT = new Font("Arial", Font.BOLD, 14);
     private static final Font[] KEY_FONT = new Font[30];
     private static final Color[] GRAYS = new Color[256];
     private static final Color[] COLOR_GRADIENT = new Color[256];
     private static final Color DEFAULT_EDGE_COLOR = new Color(100,100,100);
-
-
+    private static final Color KEY_COLOR = new Color(180, 180, 180);
+    private static final Border WORKING_BORDER = BorderFactory.createEtchedBorder();
+    private static final Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
     static {
         for (int j = 0; j < KEY_FONT.length; j++) {
             KEY_FONT[j] = new Font("Arial", Font.BOLD, 4 + j);
@@ -33,50 +42,51 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         }
     }
 
-    private static final String SET_STARTING_NODE_LABEL = "Set as starting node";
-    protected static final String SET_SEARCHED_NODE_LABEL = "Set as searched node";
-    private static final Color KEY_COLOR = new Color(180, 180, 180);
-    protected final JPopupMenu popupMenu;
-    protected GraphContainerPanel parentPanel;
-    protected AdjacencyListGraph graph;
-    private boolean hasSearchedNode;
-    protected Algorithm algorithm;
-    protected List<Node> visitedNodes = new ArrayList<>();
-    protected List<Edge> visitedEdges = new ArrayList<>();
-    protected List<Edge> edgesOnPath = new ArrayList<>();
-    protected List<Node> processedNodes = new ArrayList<>();
+    // algorithm specific values
     protected int bellmanFordStep = 0;
-
-    protected Border WORKING_BORDER = BorderFactory.createEtchedBorder();
-    protected Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
-
-    protected int panelSide;
-    private int speed;
+    private boolean hasSearchedNode;
     public boolean isFinished;
-    int nodeSize;
     protected double mf;
 
-    // when drawing on panel, x and y coords are a bit shifted for not drawing nodes on borders
-    protected int X_SHIFT = 10;
-    protected int Y_SHIFT = 40;
+    // user interaction variables
     protected int clickedNodeX;
     protected int clickedNodeY;
     protected boolean isMousePressed;
     protected Node clickedNode;
+    protected int panelSide;
+    protected int speed;
+    private int nodeSize;
+    protected final JPopupMenu popupMenu;
 
-    public GraphPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph, boolean hasSearchedNode) {
+
+
+    protected List<Node> visitedNodes = new ArrayList<>();
+    protected List<Edge> visitedEdges = new ArrayList<>();
+    protected List<Edge> edgesOnPath = new ArrayList<>();
+    protected List<Node> processedNodes = new ArrayList<>();
+
+    protected GenericTab genericTab;
+    protected AdjacencyListGraph graph;
+    protected Algorithm algorithm;
+
+    public GenericGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph, boolean hasSearchedNode) {
         this.algorithm = algorithm;
-        this.parentPanel = parentPanel;
+        this.genericTab = genericTab;
         this.graph = graph;
         this.hasSearchedNode = hasSearchedNode;
         setBackground(new Color(200, 200, 200));
+        setBorder(WORKING_BORDER);
 
         popupMenu = new JPopupMenu();
 
-        JMenuItem menuItem = new JMenuItem(SET_STARTING_NODE_LABEL);
+        JMenuItem menuItem = new JMenuItem(Constants.SET_STARTING_NODE_LABEL);
         menuItem.addActionListener(this);
         popupMenu.add(menuItem);
 
+        MouseListener popupListener = new PopupListener();
+        this.addMouseListener(popupListener);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     public void setGraph(AdjacencyListGraph graph) {
@@ -86,6 +96,7 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         processedNodes = new ArrayList<>();
         edgesOnPath = new ArrayList<>();
         bellmanFordStep = 0;
+        setBorder(WORKING_BORDER);
         repaint();
     }
 
@@ -99,9 +110,9 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         // FIXME: when changing window size, a part of the graph is lost over the border!
         mf = getPreferredSize().getHeight() / 600;
         Graphics2D g2 = (Graphics2D) g;
-        float dijkstraIncrement = (int) (255 / (edges.size() != 0 ? (float) edges.size() : 255f));
+        float edgeColorIncrement = 255 / (edges.size() != 0 ? (float) edges.size() : 255f);
         float bellmanFordIncrement = 80 / (float)graph.getNodes().size();
-        int colorShade = 0;
+        float colorShade = 0f;
         int grayShade = (int) (180 - (bellmanFordIncrement * bellmanFordStep));
         if (algorithm != Algorithm.BELLMANFORD || bellmanFordStep == 0) {
             graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
@@ -119,8 +130,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
                 color = GRAYS[grayShade];
             }
             else if (algorithm != Algorithm.DIJKSTRA) {
-                colorShade += dijkstraIncrement;
-                color = COLOR_GRADIENT[colorShade];
+                colorShade += edgeColorIncrement;
+                color = COLOR_GRADIENT[(int) colorShade];
             }
             drawColoredEdge(g2, edge, mf, color);
         }
@@ -211,12 +222,12 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
                 (int) (destinationNode.getY() * mf) + Y_SHIFT);
     }
 
-
     public void reset() {
         visitedNodes = new ArrayList<>();
         visitedEdges = new ArrayList<>();
         processedNodes = new ArrayList<>();
         this.isFinished = false;
+        setBorder(WORKING_BORDER);
         graph.getNodes().forEach(node -> {
             node.setStatus(NodeStatus.UNKNOWN);
             node.setParentForShortestPath(null);
@@ -233,7 +244,8 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
 
     public void setOperationAsFinished() {
         this.isFinished = true;
-        parentPanel.setOperationAsFinished();
+        setBorder(FINISHED_BORDER);
+        genericTab.setOperationAsFinished();
     }
 
     public void setSpeed(int speed) {
@@ -241,23 +253,20 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     }
 
     public void setProgressBar(int value) {
-        parentPanel.setProgressBar(value);
+        genericTab.setProgressBar(value);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(SET_STARTING_NODE_LABEL)) {
-            Node clickedNode = graph.getNodes().stream().filter(node -> node.getX() == clickedNodeX && node.getY() == clickedNodeY).findFirst().get();
+        Node clickedNode = graph.getNodes().stream().filter(node -> node.getX() == clickedNodeX && node.getY() == clickedNodeY).findFirst().get();
+        if (e.getActionCommand().equals(Constants.SET_STARTING_NODE_LABEL)) {
             graph.getNodes().forEach(node -> node.setStartNode(false));
             clickedNode.setStartNode(true);
         }
-        else if (e.getActionCommand().equals(SET_SEARCHED_NODE_LABEL)) {
-            Node clickedNode = graph.getNodes().stream().filter(node -> node.getX() == clickedNodeX && node.getY() == clickedNodeY).findFirst().get();
+        else if (e.getActionCommand().equals(Constants.SET_TARGET_NODE_LABEL)) {
             graph.getNodes().forEach(node -> node.setTargetNode(false));
             clickedNode.setTargetNode(true);
         }
-
-
         repaint();
     }
 
@@ -271,7 +280,6 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         }
         return node;
     }
-
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -301,17 +309,37 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
         clickedNode = getClickedNodeFromCoords(e.getX(), e.getY());
         if (clickedNode != null) {
             Node startingNode = graph.getNodes().stream().filter(node -> node.isStartNode()).findFirst().get();
-            parentPanel.main.updateStatusBar(clickedNode.toString(GraphUtils.getDistance(startingNode, clickedNode)));
+            genericTab.main.updateStatusBar(clickedNode.toString(GraphUtils.getDistance(startingNode, clickedNode)));
         }
         else {
-            parentPanel.main.updateStatusBar("Ready");
+            if (genericTab.graphsContainerPanel.genericGraphPanels.stream().allMatch(graph -> graph.isFinished)) {
+                genericTab.main.updateStatusBar("Ready");
+            }
+            else {
+                genericTab.main.updateStatusBar(genericTab.getControlPanel().getOperationName() + Constants.IN_PROGRESS_MESSAGE);
+            }
         }
         repaint();
     }
 
-    public abstract void startOperation();
+    public void start() {
+        setBorder(WORKING_BORDER);
+        visitedEdges = new ArrayList<>();
+        visitedNodes = new ArrayList<>();
+        processedNodes = new ArrayList<>();
+        isFinished = false;
 
-    public abstract void stopOperation();
+        executeStart();
+    }
+
+    public void stop() {
+        setBorder(WORKING_BORDER);
+        executeStop();
+    }
+
+    protected abstract void executeStart();
+
+    protected abstract void executeStop();
 
     public class PopupListener extends MouseAdapter {
 
@@ -336,17 +364,11 @@ public abstract class GraphPanel extends JPanel implements ActionListener, Mouse
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    public void mouseClicked(MouseEvent e) { }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) { }
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) { }
 }

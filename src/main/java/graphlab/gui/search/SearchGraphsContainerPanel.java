@@ -2,52 +2,49 @@ package graphlab.gui.search;
 
 import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
-import graphlab.gui.GraphContainerPanel;
-import graphlab.gui.Main;
+import graphlab.gui.GenericControlPanel;
+import graphlab.gui.GenericGraphsContainerPanel;
+import graphlab.gui.GenericTab;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class SearchGraphsContainerPanel extends GraphContainerPanel {
+public class SearchGraphsContainerPanel extends GenericGraphsContainerPanel {
 
-    private final GraphSearchPanel bfsGraph;
-    private final GraphSearchPanel dfsGraph;
-    private final GraphSearchPanel ucsGraph;
-    private final GraphSearchPanel aStarGraph;
-    private SearchPanel searchPanel;
+    private final SearchGraphPanel bfsGraph;
+    private final SearchGraphPanel dfsGraph;
+    private final SearchGraphPanel ucsGraph;
+    private final SearchGraphPanel aStarGraph;
+    private GenericTab genericTab;
 
-    public SearchGraphsContainerPanel(Main main, SearchPanel searchPanel, int nodesNumber, int edgesNumber) {
-        super(main, nodesNumber, edgesNumber);
-        this.searchPanel = searchPanel;
+    public SearchGraphsContainerPanel(GenericTab searchTab, GenericControlPanel genericControlPanel) {
+
+        super(searchTab, genericControlPanel);
+        this.genericTab = searchTab;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        dfsGraph = new GraphSearchPanel(Algorithm.DFS, this, new AdjacencyListGraph(graph));
+        dfsGraph = new SearchGraphPanel(Algorithm.DFS, searchTab, new AdjacencyListGraph(graph));
         row1.add(dfsGraph);
-        graphPanels.add(dfsGraph);
+        addGraphPanel(dfsGraph);
 
-        bfsGraph = new GraphSearchPanel(Algorithm.BFS, this, new AdjacencyListGraph(graph));
-        graphPanels.add(bfsGraph);
+        bfsGraph = new SearchGraphPanel(Algorithm.BFS, searchTab, new AdjacencyListGraph(graph));
+        addGraphPanel(bfsGraph);
         row1.add(bfsGraph);
 
-        ucsGraph = new GraphSearchPanel(Algorithm.UCS, this, new AdjacencyListGraph(graph));
-        graphPanels.add(ucsGraph);
+        ucsGraph = new SearchGraphPanel(Algorithm.UCS, searchTab, new AdjacencyListGraph(graph));
+        addGraphPanel(ucsGraph);
         row2.add(ucsGraph);
 
-        aStarGraph = new GraphSearchPanel(Algorithm.ASTAR, this, new AdjacencyListGraph(graph));
-        graphPanels.add(aStarGraph);
+        aStarGraph = new SearchGraphPanel(Algorithm.ASTAR, searchTab, new AdjacencyListGraph(graph));
+        addGraphPanel(aStarGraph);
         row2.add(aStarGraph);
 
         add(row1);
         add(row2);
     }
-
-    @Override
-    public void setOperationAsFinished() {
-        searchPanel.setSearchAsFinished();
-    }
-
 }
 

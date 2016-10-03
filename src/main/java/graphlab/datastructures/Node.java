@@ -124,7 +124,7 @@ public class Node {
         return "Node [" + key + "] (" + x + "," + y + ") - Cost= " + getPathCost();
     }
 
-    public String toString(int distanceFromNode) {
-        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromNode + "  " + (parentForShortestPath != null ? "parent: " + parentForShortestPath : "Not on shortest path");
+    public String toString(int distanceFromTargetNode) {
+        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromTargetNode + " - Edges: " + edges + (parentForShortestPath != null ? " - Parent: " + parentForShortestPath : "");
     }
 }

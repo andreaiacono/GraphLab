@@ -2,8 +2,8 @@ package graphlab.gui.traversal;
 
 import graphlab.algorithms.Search;
 import graphlab.datastructures.*;
-import graphlab.gui.GraphContainerPanel;
-import graphlab.gui.GraphPanel;
+import graphlab.gui.GenericGraphPanel;
+import graphlab.gui.GenericTab;
 import graphlab.algorithms.Algorithm;
 import graphlab.utils.ConsumerWithException;
 
@@ -14,14 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GraphTraversalPanel extends GraphPanel {
+import static graphlab.utils.Constants.X_SHIFT;
+import static graphlab.utils.Constants.Y_SHIFT;
+
+/**
+ * The square panel where the traversal graph is drawn and animated.
+ */
+public class TraversalGraphPanel extends GenericGraphPanel {
 
     private GraphTraversalWorker traversalWorker;
 
-    public GraphTraversalPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
-        super(algorithm, parentPanel, graph, false);
+    public TraversalGraphPanel(Algorithm algorithm, GenericTab traversalTab, AdjacencyListGraph graph) {
+        super(algorithm, traversalTab, graph, false);
         this.algorithm = algorithm;
-        this.parentPanel = parentPanel;
+        this.genericTab = traversalTab;
         this.graph = graph;
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
@@ -32,7 +38,7 @@ public class GraphTraversalPanel extends GraphPanel {
         addMouseMotionListener(this);
     }
 
-    public void startOperation() {
+    public void executeStart() {
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
@@ -41,14 +47,14 @@ public class GraphTraversalPanel extends GraphPanel {
         traversalWorker.execute();
     }
 
-    public void stopOperation() {
+    public void executeStop() {
         traversalWorker.cancel(true);
     }
 
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = parentPanel.getSize();
+        Dimension dimension = genericTab.getSize();
         panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }

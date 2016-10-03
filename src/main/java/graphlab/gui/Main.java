@@ -1,14 +1,17 @@
 package graphlab.gui;
 
 import graphlab.gui.minimumspanningtree.MinimumSpanningTreePanel;
-import graphlab.gui.search.SearchPanel;
-import graphlab.gui.shortestpath.ShortestPathPanel;
-import graphlab.gui.traversal.TraversalPanel;
+import graphlab.gui.search.SearchTab;
+import graphlab.gui.shortestpath.ShortestPathTab;
+import graphlab.gui.traversal.TraversalTab;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 
+/**
+ * The main window of the application
+ */
 public class Main extends JFrame {
 
     private JLabel statusBar;
@@ -32,9 +35,9 @@ public class Main extends JFrame {
         }
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Traversal", new TraversalPanel(this));
-        tabbedPane.addTab("Search", new SearchPanel(this));
-        tabbedPane.addTab("Shortest Path", new ShortestPathPanel(this));
+        tabbedPane.addTab("Traversal", new TraversalTab(this));
+        tabbedPane.addTab("Search", new SearchTab(this));
+        tabbedPane.addTab("Shortest Path", new ShortestPathTab(this));
         tabbedPane.addTab("Minimum Spanning Tree", new MinimumSpanningTreePanel());
         add(tabbedPane);
         add(createStatusPanel(), BorderLayout.SOUTH);
@@ -66,10 +69,10 @@ public class Main extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-
     }
 
     public void setProgressBar(int value) {
+
         // avoids values to go back and forth
         if (progressBar.getValue() < value || value == 0) {
             progressBar.setValue(value);

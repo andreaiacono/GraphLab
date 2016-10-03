@@ -5,85 +5,52 @@ import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
-import graphlab.gui.GraphContainerPanel;
-import graphlab.gui.GraphPanel;
+import graphlab.gui.GenericTab;
+import graphlab.gui.GenericGraphPanel;
+import graphlab.utils.Constants;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
-public class GraphSearchPanel extends GraphPanel {
+import static graphlab.utils.Constants.X_SHIFT;
+import static graphlab.utils.Constants.Y_SHIFT;
+
+/**
+ * The square panel where the search graph is drawn and animated.
+ */
+public class SearchGraphPanel extends GenericGraphPanel {
 
     private GraphSearchWorker searchWorker;
 
-    public GraphSearchPanel(Algorithm algorithm, GraphContainerPanel parentPanel, AdjacencyListGraph graph) {
-        super(algorithm, parentPanel, graph, true);
-        this.algorithm = algorithm;
-        this.parentPanel = parentPanel;
-        this.graph = graph;
-        setBorder(WORKING_BORDER);
-        setBackground(new Color(200, 200, 200));
+    public SearchGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
+        super(algorithm, genericTab, graph, true);
 
-        JMenuItem menuItem = new JMenuItem(SET_SEARCHED_NODE_LABEL);
+        JMenuItem menuItem = new JMenuItem(Constants.SET_TARGET_NODE_LABEL);
         menuItem.addActionListener(this);
         popupMenu.add(menuItem);
-
-        MouseListener popupListener = new PopupListener();
-        this.addMouseListener(popupListener);
-        addMouseListener(this);
-        addMouseMotionListener(this);
     }
 
-    public void startOperation() {
-        setBorder(WORKING_BORDER);
-        visitedEdges = new ArrayList<>();
-        visitedNodes = new ArrayList<>();
-        processedNodes = new ArrayList<>();
-        repaint();
-        this.isFinished = false;
-        searchWorker = new GraphSearchWorker(visitedNodes, visitedEdges, processedNodes);
+    public void executeStart() {
+        searchWorker = new GraphSearchWorker();
         searchWorker.execute();
     }
 
-    public void setOperationAsFinished() {
-        this.isFinished = true;
-        setBorder(FINISHED_BORDER);
-        if (parentPanel.graphPanels.stream().allMatch(panel -> panel.isFinished)) {
-            parentPanel.setOperationAsFinished();
-        }
+    public void executeStop() {
+        searchWorker.cancel(true);
     }
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = parentPanel.getSize();
+        Dimension dimension = genericTab.getSize();
         panelSide = dimension.width < dimension.height ? dimension.width /2 - X_SHIFT : dimension.height/2 - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
-
-    public void stopOperation() {
-        setBorder(WORKING_BORDER);
-        searchWorker.cancel(true);
-    }
-
     class GraphSearchWorker extends SwingWorker<Void, Void> {
 
-        List<Node> visitedNodes;
-        List<Edge> visitedEdges;
-        List<Node> processedNodes;
-
-        public GraphSearchWorker(List<Node> visitedNodes, List<Edge> visitedEdges, List<Node> processedNodes) {
-            this.visitedNodes = visitedNodes;
-            this.visitedEdges = visitedEdges;
-            this.processedNodes = processedNodes;
-        }
-
-        @Override
+       @Override
         protected Void doInBackground() throws Exception {
 
             Boolean isCanceled = new Boolean(false);
@@ -117,6 +84,5 @@ public class GraphSearchPanel extends GraphPanel {
             setOperationAsFinished();
             return null;
         }
-
     }
 }

@@ -1,35 +1,47 @@
 package graphlab.gui.traversal;
 
-import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.algorithms.Algorithm;
-import graphlab.gui.GraphContainerPanel;
-import graphlab.gui.GraphPanel;
-import graphlab.gui.Main;
+import graphlab.datastructures.AdjacencyListGraph;
+import graphlab.gui.GenericControlPanel;
+import graphlab.gui.GenericGraphPanel;
+import graphlab.gui.GenericGraphsContainerPanel;
+import graphlab.gui.GenericTab;
 
 import java.awt.*;
 
-public class TraversalGraphsContainerPanel extends GraphContainerPanel {
+/**
+ * The panel that contains all the GenericGraphPanel for the traversal.
+ */
+public class TraversalGraphsContainerPanel extends GenericGraphsContainerPanel {
 
-    private final GraphPanel bfsGraph;
-    private final GraphPanel dfsGraph;
-    private TraversalPanel traversalPanel;
+    private final GenericGraphPanel bfsGraph;
+    private final GenericGraphPanel dfsGraph;
+    private GenericTab traversalTab;
 
-    public TraversalGraphsContainerPanel(Main main, TraversalPanel traversalPanel, int nodesNumber, int edgesNumber) {
-        super(main, nodesNumber, edgesNumber);
-        this.traversalPanel = traversalPanel;
+    public TraversalGraphsContainerPanel(GenericTab traversalTab, GenericControlPanel genericControlPanel) {
+
+        super(traversalTab, genericControlPanel);
+        this.traversalTab = traversalTab;
+
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
-        dfsGraph = new GraphTraversalPanel(Algorithm.DFS, this, new AdjacencyListGraph(graph));
+
+        dfsGraph = new TraversalGraphPanel(Algorithm.DFS, traversalTab, new AdjacencyListGraph(graph));
+        bfsGraph = new TraversalGraphPanel(Algorithm.BFS, traversalTab, new AdjacencyListGraph(graph));
         add(dfsGraph);
-        graphPanels.add(dfsGraph);
-        bfsGraph = new GraphTraversalPanel(Algorithm.BFS, this, new AdjacencyListGraph(graph));
         add(bfsGraph);
-        graphPanels.add(bfsGraph);
+
+        addGraphPanel(dfsGraph);
+        addGraphPanel(bfsGraph);
     }
 
-    @Override
-    public void setOperationAsFinished() {
-        traversalPanel.setTraversalAsFinished();
-    }
+//    @Override
+//    public Dimension getPreferredSize() {
+//        Dimension dimension = traversalTab.getSize();
+//        int panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
+//        return new Dimension(panelSide, panelSide);
+//    }
+
+
 }
 
