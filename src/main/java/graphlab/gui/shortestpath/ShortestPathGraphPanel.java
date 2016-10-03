@@ -22,11 +22,11 @@ import static graphlab.utils.Constants.Y_SHIFT;
 /**
  * The square panel where the shortest path graph is drawn and animated.
  */
-public class ShortestPathPanel extends GenericGraphPanel {
+public class ShortestPathGraphPanel extends GenericGraphPanel {
 
     private ShortestPathWorker shortestPathWorker;
 
-    public ShortestPathPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
+    public ShortestPathGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
         super(algorithm, genericTab, graph, true);
 
         // adds a new item to the popup menu
@@ -45,7 +45,7 @@ public class ShortestPathPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getSize();
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
         panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }

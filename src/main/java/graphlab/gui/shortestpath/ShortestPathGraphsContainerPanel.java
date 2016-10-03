@@ -23,8 +23,8 @@ public class ShortestPathGraphsContainerPanel extends GenericGraphsContainerPane
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
 
-        dijkstra = new ShortestPathPanel(Algorithm.DIJKSTRA, traversalTab, new AdjacencyListGraph(graph));
-        bellmanFord = new ShortestPathPanel(Algorithm.BELLMANFORD, traversalTab, new AdjacencyListGraph(graph));
+        dijkstra = new ShortestPathGraphPanel(Algorithm.DIJKSTRA, traversalTab, new AdjacencyListGraph(graph));
+        bellmanFord = new ShortestPathGraphPanel(Algorithm.BELLMANFORD, traversalTab, new AdjacencyListGraph(graph));
 
         add(dijkstra);
         add(bellmanFord);

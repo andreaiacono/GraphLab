@@ -43,7 +43,7 @@ public class SearchGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getSize();
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
         panelSide = dimension.width < dimension.height ? dimension.width /2 - X_SHIFT : dimension.height/2 - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
