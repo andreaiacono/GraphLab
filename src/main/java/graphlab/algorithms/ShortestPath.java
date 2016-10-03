@@ -67,7 +67,10 @@ public class ShortestPath {
                 if (isCanceled) {
                     return;
                 }
-                onVisitedEdge.accept(edge);
+                // only the first time draws the edges, otherwise it takes too much to draw the GUI
+                if (j==0) {
+                    onVisitedEdge.accept(edge);
+                }
                 Node sourceNode = edge.getSource();
                 Node destinationNode = edge.getDestination();
                 int edgeCost = edge.getCost();
