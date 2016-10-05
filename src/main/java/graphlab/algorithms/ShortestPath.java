@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class ShortestPath {
 
-    public static void dijkstra(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
+    public static void dijkstra(Graph graph, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
 
         Node startingNode = GraphUtils.getStartingNode(graph);
         PriorityQueue<Node> toBeVisitedNodes = new PriorityQueue<>((n1, n2) -> Integer.compare(n1.getPathCost(), n2.getPathCost()));
@@ -38,7 +38,7 @@ public class ShortestPath {
 
                 if (newCost < destinationNode.getPathCost()) {
                     destinationNode.setPathCost(newCost);
-                    edge.getDestination().setParentForShortestPath(edge.getSource());
+                    edge.getDestination().setPathParent(edge.getSource());
 
                     // no dynamic recomputation of priority in java.util.PriorityQueue,
                     // so remove and re-insert
@@ -55,7 +55,7 @@ public class ShortestPath {
         }
     }
 
-    public static void bellmanFord(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Callable bellmanFordStepIncrementer, Boolean isCanceled) throws Exception {
+    public static void bellmanFord(Graph graph, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Callable bellmanFordStepIncrementer, Boolean isCanceled) throws Exception {
 
         Node startingNode = GraphUtils.getStartingNode(graph);
         graph.getNodes().forEach(node -> node.setPathCost(node == startingNode ? 0 : Integer.MAX_VALUE));
@@ -69,6 +69,7 @@ public class ShortestPath {
                 }
                 // only the first time draws the edges, otherwise it takes too much to draw the GUI
                 if (j==0) {
+                    bellmanFordStepIncrementer.call();
                     onVisitedEdge.accept(edge);
                 }
                 Node sourceNode = edge.getSource();
@@ -78,17 +79,15 @@ public class ShortestPath {
                 if (sourceNode.getPathCost() != Integer.MAX_VALUE &&
                         sourceNode.getPathCost() + edgeCost < destinationNode.getPathCost()) {
                     destinationNode.setPathCost(sourceNode.getPathCost() + edgeCost);
-                    destinationNode.setParentForShortestPath(sourceNode);
+                    destinationNode.setPathParent(sourceNode);
                 }
             }
-            bellmanFordStepIncrementer.call();
         }
 
         for (Edge edge : edges) {
             if (isCanceled) {
                 return;
             }
-            onVisitedEdge.accept(edge);
             Node sourceNode = edge.getSource();
             Node destinationNode = edge.getDestination();
             int edgeCost = edge.getCost();

@@ -1,6 +1,7 @@
 package graphlab.gui;
 
 import graphlab.datastructures.AdjacencyListGraph;
+import graphlab.utils.Constants;
 import graphlab.utils.GraphUtils;
 
 import javax.swing.*;
@@ -10,27 +11,20 @@ import java.util.List;
 public class GenericGraphsContainerPanel extends JPanel {
 
     protected AdjacencyListGraph graph;
-    protected int edgesNumber;
-    protected int nodesNumber;
-    protected int speed;
     public List<GenericGraphPanel> genericGraphPanels;
-    private GenericControlPanel genericControlPanel;
+    private GenericControlPanel controlPanel;
 
 
-    public GenericGraphsContainerPanel(GenericTab genericTab, GenericControlPanel genericControlPanel) {
-        this.genericControlPanel = genericControlPanel;
+    public GenericGraphsContainerPanel(GenericTab genericTab, GenericControlPanel controlPanel) {
+        this.controlPanel = controlPanel;
         genericGraphPanels = new ArrayList<>();
-        edgesNumber = genericControlPanel.getEdgesNumber();
-        nodesNumber = genericControlPanel.getNodesNumber();
-        speed = genericControlPanel.getSpeed();
-        graph = GraphUtils.createRandomGraph(genericControlPanel.getNodesNumber(), genericControlPanel.getEdgesNumber(), 500, true);
+        graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
     }
 
     public void newGraph() {
-        edgesNumber = genericControlPanel.getEdgesNumber();
-        nodesNumber = genericControlPanel.getNodesNumber();
-        AdjacencyListGraph graph = GraphUtils.createRandomGraph(nodesNumber, edgesNumber, 500, true);
+        AdjacencyListGraph graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
         genericGraphPanels.forEach(panel -> panel.setGraph(new AdjacencyListGraph(graph)));
+        genericGraphPanels.forEach(panel -> panel.newGraph());
     }
 
     public void addGraphPanel(GenericGraphPanel genericGraphPanel) {
@@ -49,5 +43,5 @@ public class GenericGraphsContainerPanel extends JPanel {
         genericGraphPanels.forEach(panel -> panel.stop());
     }
 
-    public void updateSpeed(int speed) { genericGraphPanels.forEach(panel -> panel.setSpeed(speed)); }
+    public void updateSpeed() { genericGraphPanels.forEach(panel -> panel.setSpeed(controlPanel.getSpeed())); }
 }

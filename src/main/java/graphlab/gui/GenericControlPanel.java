@@ -35,7 +35,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         setLayout(sl);
 
         JLabel edgeLabel = new JLabel("Edges: ");
-        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, 40, this.edgesNumber);
+        JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, Constants.MAX_EDGES, this.edgesNumber);
         edgeSlider.setName("edges");
         edgeSlider.addChangeListener(this);
 
@@ -48,7 +48,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
-        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, 500, this.nodesNumber);
+        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, Constants.MAX_NODES, this.nodesNumber);
         nodesSlider.setName("nodes");
         nodesSlider.addChangeListener(this);
 
@@ -61,7 +61,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
 
 
         JLabel speedLabel = new JLabel("Speed: ");
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, this.speed);
+        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 0, Constants.MAX_SPEED, this.speed);
         speedSlider.setName("speed");
         speedSlider.addChangeListener(this);
 
@@ -104,7 +104,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
                 startButton.setText("Stop");
                 resetButton.setEnabled(false);
                 newGraphButton.setEnabled(false);
-                genericTab.getGraphsContainer().genericGraphPanels.forEach(graph -> graph.setSpeed(speed));
+                genericTab.getGraphsContainer().updateSpeed();
                 genericTab.getGraphsContainer().start();
             }
         });
@@ -138,7 +138,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         JSlider slider = (JSlider) e.getSource();
         if (slider.getName().equals("speed")) {
             speed = slider.getValue();
-            genericTab.getGraphsContainer().updateSpeed(speed);
+            genericTab.getGraphsContainer().updateSpeed();
         }
         else if (slider.getName().equals("nodes")) {
             nodesNumber = slider.getValue();

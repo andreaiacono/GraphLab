@@ -1,6 +1,6 @@
 package graphlab.gui;
 
-import graphlab.gui.minimumspanningtree.MinimumSpanningTreePanel;
+import graphlab.gui.minimumspanningtree.MstTab;
 import graphlab.gui.search.SearchTab;
 import graphlab.gui.shortestpath.ShortestPathTab;
 import graphlab.gui.traversal.TraversalTab;
@@ -38,7 +38,7 @@ public class Main extends JFrame {
         tabbedPane.addTab("Traversal", new TraversalTab(this));
         tabbedPane.addTab("Search", new SearchTab(this));
         tabbedPane.addTab("Shortest Path", new ShortestPathTab(this));
-        tabbedPane.addTab("Minimum Spanning Tree", new MinimumSpanningTreePanel());
+        tabbedPane.addTab("Minimum Spanning Tree", new MstTab(this));
         add(tabbedPane);
         add(createStatusPanel(), BorderLayout.SOUTH);
 

@@ -76,9 +76,10 @@ public class TraversalGraphPanel extends GenericGraphPanel {
 
             Boolean isCanceled = new Boolean(false);
 
-            Consumer<Node> visitNode = node -> {
+            ConsumerWithException<Node> visitNode = node -> {
                 visitedNodes.add(node);
                 setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size()) * 100));
+                updateGraph();
             };
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {

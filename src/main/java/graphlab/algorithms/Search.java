@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class Search {
 
     public static void bfs(Graph graph,
-                           Consumer<Node> onVisitedNode,
+                           ConsumerWithException<Node> onVisitedNode,
                            ConsumerWithException<Edge> onVisitedEdge,
                            Consumer<Node> onProcessedNode,
                            Boolean isCanceled,
@@ -35,7 +35,7 @@ public class Search {
     }
 
     public static void dfs(Graph graph,
-                           Consumer<Node> onVisitedNode,
+                           ConsumerWithException<Node> onVisitedNode,
                            ConsumerWithException<Edge> onVisitedEdge,
                            Consumer<Node> onProcessedNode,
                            Boolean isCanceled,
@@ -54,7 +54,7 @@ public class Search {
     public static void genericFirstSearch(Graph graph,
                                           BiConsumer<Deque, Node> nodePutter,
                                           Function<Deque, Node> nodeGetter,
-                                          Consumer<Node> onVisitedNode,
+                                          ConsumerWithException<Node> onVisitedNode,
                                           ConsumerWithException<Edge> onVisitedEdge,
                                           Consumer<Node> onProcessedNode,
                                           Boolean isCanceled,
@@ -85,15 +85,15 @@ public class Search {
         }
     }
 
-    public static void astar(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
+    public static void astar(Graph graph, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
         genericCostSearch(graph, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled, true);
     }
 
-    public static void ucs(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
+    public static void ucs(Graph graph, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
         genericCostSearch(graph, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled, false);
     }
 
-    public static void genericCostSearch(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled, boolean useHeuristic) throws Exception {
+    public static void genericCostSearch(Graph graph, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled, boolean useHeuristic) throws Exception {
         graph.getNodes().forEach(node -> node.setStatus(NodeStatus.UNKNOWN));
         PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> Integer.compare(o1.getPathCost(), o2.getPathCost()));
         Node startingNode = GraphUtils.getStartingNode(graph);

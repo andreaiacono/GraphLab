@@ -9,7 +9,7 @@ import graphlab.gui.Main;
  */
 public class SearchControlPanel extends GenericControlPanel {
 
-    private static int DEFAULT_SPEED = 50;
+    private static int DEFAULT_SPEED = 30;
     private static int DEFAULT_NODES = 150;
     private static int DEFAULT_EDGES = 8;
 

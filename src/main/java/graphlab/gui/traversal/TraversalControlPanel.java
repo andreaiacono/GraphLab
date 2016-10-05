@@ -9,7 +9,7 @@ import graphlab.gui.Main;
  */
 public class TraversalControlPanel extends GenericControlPanel{
 
-    private static int DEFAULT_SPEED = 50;
+    private static int DEFAULT_SPEED = 25;
     private static int DEFAULT_NODES = 100;
     private static int DEFAULT_EDGES = 10;
 

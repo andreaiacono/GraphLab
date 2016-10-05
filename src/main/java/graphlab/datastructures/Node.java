@@ -13,7 +13,7 @@ public class Node {
     private Set<Edge> edges = new HashSet<>();
     private boolean isStartNode = false;
     private boolean isTargetNode = false;
-    private Node parentForShortestPath;
+    private Node pathParent;
 
     public Node(Node node) {
         this.key = node.getKey();
@@ -111,12 +111,12 @@ public class Node {
         this.pathCost = pathCost;
     }
 
-    public Node getParentForShortestPath() {
-        return parentForShortestPath;
+    public Node getPathParent() {
+        return pathParent;
     }
 
-    public void setParentForShortestPath(Node parentForShortestPath) {
-        this.parentForShortestPath = parentForShortestPath;
+    public void setPathParent(Node pathParent) {
+        this.pathParent = pathParent;
     }
 
     @Override
@@ -125,6 +125,6 @@ public class Node {
     }
 
     public String toString(int distanceFromTargetNode) {
-        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromTargetNode + " - Edges: " + edges + (parentForShortestPath != null ? " - Parent: " + parentForShortestPath : "");
+        return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromTargetNode + " - Edges: " + edges + (pathParent != null ? " - Parent: " + pathParent : "");
     }
 }

@@ -29,6 +29,8 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
     public ShortestPathGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
         super(algorithm, genericTab, graph, true);
 
+        this.drawShortestPath = true;
+
         // adds a new item to the popup menu
         JMenuItem menuItem = new JMenuItem(Constants.SET_TARGET_NODE_LABEL);
         menuItem.addActionListener(this);
@@ -37,7 +39,7 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
 
     public void executeStart() {
         bellmanFordStep = 0;
-        graph.getNodes().forEach(node -> { node.setParentForShortestPath(null); node.setStatus(NodeStatus.UNKNOWN); node.getEdges().forEach(edge -> edge.recomputeCost());});
+        graph.getNodes().forEach(node -> { node.getEdges().forEach(edge -> edge.recomputeCost());});
 
         shortestPathWorker = new ShortestPathWorker();
         shortestPathWorker.execute();
@@ -48,6 +50,18 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
         panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        this.drawThinEdges = true;
+    }
+
+    @Override
+    public void newGraph() {
+        super.newGraph();
+        this.drawThinEdges = true;
     }
 
     public void executeStop() {
@@ -62,17 +76,17 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
 
             Boolean isCanceled = new Boolean(false);
 
-            Consumer<Node> visitNode = node -> {
+            ConsumerWithException<Node> visitNode = node -> {
                 visitedNodes.add(node);
                 setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size()) * 100));
+                updateGraph();
             };
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
                 visitedEdges.add(edge);
                 updateGraph();
             };
-            Callable startingCheck = () -> {
-                visitedEdges.clear();
+            Callable incrementStep = () -> {
                 bellmanFordStep++;
                 return null;
             };
@@ -82,7 +96,9 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
                     graphlab.algorithms.ShortestPath.dijkstra(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
                 case BELLMANFORD:
-                    graphlab.algorithms.ShortestPath.bellmanFord(graph, visitNode, visitEdge, processNode, startingCheck, isCanceled);
+                    ShortestPathGraphPanel.this.drawThinEdges = true;
+                    graphlab.algorithms.ShortestPath.bellmanFord(graph, visitNode, visitEdge, processNode, incrementStep, isCanceled);
+                    ShortestPathGraphPanel.this.drawThinEdges = false;
                     break;
             }
 

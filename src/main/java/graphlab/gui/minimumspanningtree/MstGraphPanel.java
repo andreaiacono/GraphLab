@@ -1,7 +1,7 @@
-package graphlab.gui.search;
+package graphlab.gui.minimumspanningtree;
 
 import graphlab.algorithms.Algorithm;
-import graphlab.algorithms.Search;
+import graphlab.algorithms.MinimumSpanningTree;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
@@ -18,14 +18,17 @@ import static graphlab.utils.Constants.X_SHIFT;
 import static graphlab.utils.Constants.Y_SHIFT;
 
 /**
- * The square panel where the search graph is drawn and animated.
+ * The square panel where the MST graph is drawn and animated.
  */
-public class SearchGraphPanel extends GenericGraphPanel {
+public class MstGraphPanel extends GenericGraphPanel {
 
     private GraphSearchWorker searchWorker;
 
-    public SearchGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
+    public MstGraphPanel(Algorithm algorithm, GenericTab genericTab, AdjacencyListGraph graph) {
         super(algorithm, genericTab, graph, true);
+
+        this.drawTree = true;
+        this.hasSearchedNode = false;
 
         JMenuItem menuItem = new JMenuItem(Constants.SET_TARGET_NODE_LABEL);
         menuItem.addActionListener(this);
@@ -44,21 +47,20 @@ public class SearchGraphPanel extends GenericGraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width / 2 - X_SHIFT : dimension.height / 2 - Y_SHIFT;
+        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {
 
-        @Override
+       @Override
         protected Void doInBackground() throws Exception {
 
             Boolean isCanceled = new Boolean(false);
 
-            ConsumerWithException<Node> visitNode = node -> {
+            Consumer<Node> visitNode = node -> {
                 visitedNodes.add(node);
                 setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size()) * 100));
-                updateGraph();
             };
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
@@ -67,17 +69,8 @@ public class SearchGraphPanel extends GenericGraphPanel {
             };
 
             switch (algorithm) {
-                case BFS:
-                    Search.bfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
-                    break;
-                case DFS:
-                    Search.dfs(graph, visitNode, visitEdge, processNode, isCanceled, true);
-                    break;
-                case UCS:
-                    Search.ucs(graph, visitNode, visitEdge, processNode, isCanceled);
-                    break;
-                case ASTAR:
-                    Search.astar(graph, visitNode, visitEdge, processNode, isCanceled);
+                case PRIM:
+                    MinimumSpanningTree.prim(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
 

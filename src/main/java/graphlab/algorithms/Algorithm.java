@@ -21,6 +21,10 @@ public enum Algorithm {
         public String toString() {
             return "Bellman-Ford";
         }
+    },
+    PRIM {
+        @Override
+        public String toString() { return "Prim"; }
     }
 }
 

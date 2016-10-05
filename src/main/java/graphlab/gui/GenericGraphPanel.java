@@ -13,6 +13,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static graphlab.utils.Constants.X_SHIFT;
@@ -23,20 +24,23 @@ import static graphlab.utils.Constants.Y_SHIFT;
  */
 public abstract class GenericGraphPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
 
-    /** graphics rendering constants **/
+    /**
+     * graphics rendering constants
+     **/
     private static final Font ALGORITHM_NAME_FONT = new Font("Arial", Font.BOLD, 14);
     private static final Font[] KEY_FONT = new Font[30];
     private static final Color[] GRAYS = new Color[256];
     private static final Color[] COLOR_GRADIENT = new Color[256];
-    private static final Color DEFAULT_EDGE_COLOR = new Color(100,100,100);
+    private static final Color DEFAULT_EDGE_COLOR = new Color(100, 100, 100);
     private static final Color KEY_COLOR = new Color(180, 180, 180);
     private static final Border WORKING_BORDER = BorderFactory.createEtchedBorder();
     private static final Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
+
     static {
         for (int j = 0; j < KEY_FONT.length; j++) {
             KEY_FONT[j] = new Font("Arial", Font.BOLD, 4 + j);
         }
-        for (int j=0; j<255; j++) {
+        for (int j = 0; j < 255; j++) {
             GRAYS[j] = new Color(j, j, j);
             COLOR_GRADIENT[j] = new Color(j, j, 255);
         }
@@ -44,9 +48,17 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
 
     // algorithm specific values
     protected int bellmanFordStep = 0;
-    private boolean hasSearchedNode;
+    protected boolean hasSearchedNode;
     public boolean isFinished;
     protected double mf;
+
+    // graph drawing settings
+    protected boolean drawThinEdges = true;
+    protected boolean drawShortestPath = false;
+    protected boolean drawTree = false;
+    protected boolean drawEdgesWithColorGradient = true;
+    protected boolean drawEdgesWithGrayShade = false;
+
 
     // user interaction variables
     protected int clickedNodeX;
@@ -57,7 +69,6 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     protected int speed;
     private int nodeSize;
     protected final JPopupMenu popupMenu;
-
 
 
     protected List<Node> visitedNodes = new ArrayList<>();
@@ -111,66 +122,86 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         mf = getPreferredSize().getHeight() / 600;
         Graphics2D g2 = (Graphics2D) g;
         float edgeColorIncrement = 255 / (edges.size() != 0 ? (float) edges.size() : 255f);
-        float bellmanFordIncrement = 80 / (float)graph.getNodes().size();
+        float bellmanFordIncrement = 80 / (float) graph.getEdges().size();
         float colorShade = 0f;
         int grayShade = (int) (180 - (bellmanFordIncrement * bellmanFordStep));
-        if (algorithm != Algorithm.BELLMANFORD || bellmanFordStep == 0) {
+
+        if (drawThinEdges) {
             graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
         }
         else {
+            // draws the final step of bellman-ford
             g2.setStroke(new BasicStroke(3));
-            Color color = GRAYS[180];
+            Color color = GRAYS[100];
             graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, color)));
         }
 
+        // draws working edges (the ones the algorithm is working on during execution)
         g2.setStroke(new BasicStroke(3));
-        for (Edge edge : edges) {
+        Edge edge = null;
+        Iterator<Edge> edgeIterator = edges.iterator();
+        while (edgeIterator.hasNext()) {
+            edge = edgeIterator.next();
             Color color = DEFAULT_EDGE_COLOR;
-            if (algorithm == Algorithm.BELLMANFORD) {
+            if (drawEdgesWithGrayShade) {
                 color = GRAYS[grayShade];
             }
-            else if (algorithm != Algorithm.DIJKSTRA) {
+            else if (drawEdgesWithColorGradient) {
                 colorShade += edgeColorIncrement;
                 color = COLOR_GRADIENT[(int) colorShade];
             }
             drawColoredEdge(g2, edge, mf, color);
         }
 
-        if (algorithm == Algorithm.DIJKSTRA || algorithm == Algorithm.BELLMANFORD) {
-            drawShortestPath(g2);
+        // FIXME: when the shortest path procedure ends, the edge shouldn't be colored
+        if (drawEdgesWithGrayShade && edges.size()>0) {
+            drawColoredEdge(g2, edge, mf, Color.BLACK);
         }
 
+        // draws optional paths in the graph
+        if (drawShortestPath) {
+            drawShortestPath(g2);
+        }
+        else if (drawTree) {
+            drawTree(g2);
+        }
+
+        // draws the nodes
         g2.setStroke(new BasicStroke(1));
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
+        // draw algorithm's name
         g.setColor(Color.BLACK);
         g.setFont(ALGORITHM_NAME_FONT);
         g.drawString(algorithm.toString(), 5, 15);
     }
 
+    /**
+     * draws the path from starting node to all its children (for MST)
+     *
+     * @param g2
+     */
+    private void drawTree(Graphics2D g2) {
+        try {
+            g2.setStroke(new BasicStroke(5));
+            graph.getNodes().forEach(node -> {
+                if (node.getPathParent() != null) {
+                    drawColoredEdge(g2, node, node.getPathParent(), mf, Color.BLACK);
+                }
+            });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void drawShortestPath(Graphics2D g2) {
         try {
-            int counter = 1;
-
-            // first time, just counts the nodes
             Node currentNode = GraphUtils.getTargetNode(graph);
-            while (currentNode.getParentForShortestPath() != null && counter < 500) {
-                counter++;
-                currentNode = currentNode.getParentForShortestPath();
-            }
-
-            if (counter > 0) {
-                // now draws the path
-                float increment = 255 / counter;
-                int colorShade = 255;
-
-                currentNode = GraphUtils.getTargetNode(graph);
-                while (currentNode.getParentForShortestPath() != null && counter > 0) {
-                    colorShade -= increment;
-                    drawColoredEdge(g2, currentNode, currentNode.getParentForShortestPath(), mf, new Color(0, 255, colorShade));
-                    currentNode = currentNode.getParentForShortestPath();
-                    counter--;
-                }
+            g2.setStroke(new BasicStroke(5));
+            while (currentNode.getPathParent() != null) {
+                drawColoredEdge(g2, currentNode, currentNode.getPathParent(), mf, Color.GREEN);
+                currentNode = currentNode.getPathParent();
             }
         }
         catch (Exception e) {
@@ -186,10 +217,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         nodeSize = (int) (25 * mf);
         Color color;
         if (node.isStartNode()) {
-            color = Color.GREEN;
+            color = Color.BLUE;
         }
         else if (node.isTargetNode() && hasSearchedNode) {
-            color = Color.CYAN;
+            color = Color.GREEN;
         }
         else {
             color = nodeColor == null ? node.getStatus().color : nodeColor;
@@ -230,9 +261,12 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         setBorder(WORKING_BORDER);
         graph.getNodes().forEach(node -> {
             node.setStatus(NodeStatus.UNKNOWN);
-            node.setParentForShortestPath(null);
+            node.setPathParent(null);
         });
         repaint();
+    }
+
+    public void newGraph() {
     }
 
     protected void updateGraph() throws Exception {
@@ -328,18 +362,31 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
         isFinished = false;
-
+        graph.getNodes().forEach(node -> { node.setPathParent(null); node.setStatus(NodeStatus.UNKNOWN);});
         executeStart();
     }
 
     public void stop() {
         setBorder(WORKING_BORDER);
+        isFinished = true;
         executeStop();
     }
 
     protected abstract void executeStart();
 
     protected abstract void executeStop();
+
+    public void setDrawThinEdges(boolean drawThinEdges) {
+        this.drawThinEdges = drawThinEdges;
+    }
+
+    public void setDrawEdgesWithColorGradient(boolean drawEdgesWithColorGradient) {
+        this.drawEdgesWithColorGradient = drawEdgesWithColorGradient;
+    }
+
+    public void setDrawEdgesWithGrayShade(boolean drawEdgesWithGrayShade) {
+        this.drawEdgesWithGrayShade = drawEdgesWithGrayShade;
+    }
 
     public class PopupListener extends MouseAdapter {
 
