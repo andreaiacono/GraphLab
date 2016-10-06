@@ -14,6 +14,7 @@ import java.awt.*;
 public class MstGraphsContainerPanel extends GenericGraphsContainerPanel {
 
     private final MstGraphPanel prim;
+    private final MstGraphPanel kruskal;
     private GenericTab genericTab;
 
     public MstGraphsContainerPanel(GenericTab searchTab, GenericControlPanel genericControlPanel) {
@@ -30,6 +31,11 @@ public class MstGraphsContainerPanel extends GenericGraphsContainerPanel {
         prim.setDrawEdgesWithColorGradient(false);
         addGraphPanel(prim);
         add(prim);
+
+        kruskal = new MstGraphPanel(Algorithm.KRUSKAL, searchTab, new AdjacencyListGraph(graph));
+        kruskal.setDrawEdgesWithColorGradient(false);
+        addGraphPanel(kruskal);
+        add(kruskal);
     }
 }
 

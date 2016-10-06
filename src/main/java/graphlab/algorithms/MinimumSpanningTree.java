@@ -1,9 +1,6 @@
 package graphlab.algorithms;
 
-import graphlab.datastructures.Edge;
-import graphlab.datastructures.Graph;
-import graphlab.datastructures.Node;
-import graphlab.datastructures.NodeStatus;
+import graphlab.datastructures.*;
 import graphlab.utils.ConsumerWithException;
 import graphlab.utils.GraphUtils;
 
@@ -49,6 +46,24 @@ public class MinimumSpanningTree {
 
             if (isCanceled) {
                 return;
+            }
+        }
+    }
+
+    public static void kruskal(Graph graph, Consumer<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
+
+        DisjointSets sets = new DisjointSets(graph.getNodes());
+
+        // sort all edges
+        List<Edge> sortedEdges = new ArrayList<>(graph.getEdges());
+        java.util.Collections.sort(sortedEdges, (e1, e2) -> Integer.compare(e1.getCost(), e2.getCost()));
+
+        // greedly takes the minimum cost edge
+        for (Edge edge : sortedEdges){
+            if (sets.nodesAreInDifferentSets(edge.getSource(), edge.getDestination())) {
+                onVisitedEdge.accept(edge);
+                sets.merge(sets.find(edge.getDestination()), sets.find(edge.getSource()));
+                edge.getDestination().setPathParent(edge.getSource());
             }
         }
     }

@@ -121,7 +121,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node [" + key + "] (" + x + "," + y + ") - Cost= " + getPathCost();
+        return  "" + key ; //+ "] (" + x + "," + y + ") - Cost= " + getPathCost();
     }
 
     public String toString(int distanceFromTargetNode) {

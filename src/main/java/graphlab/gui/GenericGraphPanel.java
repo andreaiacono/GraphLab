@@ -163,7 +163,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
             drawShortestPath(g2);
         }
         else if (drawTree) {
-            drawTree(g2);
+            drawTree(g2, edges);
         }
 
         // draws the nodes
@@ -181,14 +181,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
      *
      * @param g2
      */
-    private void drawTree(Graphics2D g2) {
+    private void drawTree(Graphics2D g2, List<Edge> edges) {
         try {
             g2.setStroke(new BasicStroke(5));
-            graph.getNodes().forEach(node -> {
-                if (node.getPathParent() != null) {
-                    drawColoredEdge(g2, node, node.getPathParent(), mf, Color.BLACK);
-                }
-            });
+            edges.forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK));
         }
         catch (Exception e) {
             e.printStackTrace();

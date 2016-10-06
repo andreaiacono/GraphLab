@@ -25,6 +25,10 @@ public enum Algorithm {
     PRIM {
         @Override
         public String toString() { return "Prim"; }
+    },
+    KRUSKAL {
+        @Override
+        public String toString() { return "Kruskal"; }
     }
 }
 

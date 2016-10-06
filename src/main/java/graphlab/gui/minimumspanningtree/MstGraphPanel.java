@@ -47,7 +47,7 @@ public class MstGraphPanel extends GenericGraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
@@ -71,6 +71,9 @@ public class MstGraphPanel extends GenericGraphPanel {
             switch (algorithm) {
                 case PRIM:
                     MinimumSpanningTree.prim(graph, visitNode, visitEdge, processNode, isCanceled);
+                    break;
+                case KRUSKAL:
+                    MinimumSpanningTree.kruskal(graph, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
 
