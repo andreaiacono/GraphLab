@@ -47,33 +47,37 @@ public class MstGraphPanel extends GenericGraphPanel {
     @Override
     public Dimension getPreferredSize() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = dimension.width < dimension.height * 3 ? dimension.width / 3 - X_SHIFT : dimension.height - Y_SHIFT;
         return new Dimension(panelSide, panelSide);
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {
 
-       @Override
+        @Override
         protected Void doInBackground() throws Exception {
 
             Boolean isCanceled = new Boolean(false);
 
-            Consumer<Node> visitNode = node -> {
-                visitedNodes.add(node);
-                setProgressBar((int) ((visitedNodes.size() / (float) graph.getNodes().size()) * 100));
-            };
+            Consumer<Node> visitNode = node -> visitedNodes.add(node);
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
                 visitedEdges.add(edge);
+            };
+            ConsumerWithException<Edge> processEdge = edge -> {
+                edgesOnPath.add(edge);
+                setProgressBar((int) ((edgesOnPath.size() / (float) graph.getNodes().size() - 1) * 100));
                 updateGraph();
             };
 
             switch (algorithm) {
+                case BORUVKA:
+                    MinimumSpanningTree.boruvka(graph, visitNode, visitEdge, processEdge, isCanceled);
+                    break;
                 case PRIM:
-                    MinimumSpanningTree.prim(graph, visitNode, visitEdge, processNode, isCanceled);
+                    MinimumSpanningTree.prim(graph, visitNode, processNode, visitEdge, processEdge, isCanceled);
                     break;
                 case KRUSKAL:
-                    MinimumSpanningTree.kruskal(graph, visitNode, visitEdge, processNode, isCanceled);
+                    MinimumSpanningTree.kruskal(graph, visitNode, visitEdge, processEdge, isCanceled);
                     break;
             }
 

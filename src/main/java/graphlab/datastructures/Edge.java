@@ -2,7 +2,7 @@ package graphlab.datastructures;
 
 import graphlab.utils.GraphUtils;
 
-public class Edge {
+public class Edge implements Comparable{
     private Node source;
     private Node destination;
     private int cost;
@@ -51,5 +51,11 @@ public class Edge {
     @Override
     public String toString() {
         return "[" + source.getKey() + "] -> [" + destination.getKey() + "]";
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Edge other = (Edge) o;
+        return Integer.compare(cost, other.getCost());
     }
 }

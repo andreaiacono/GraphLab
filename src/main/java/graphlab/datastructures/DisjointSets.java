@@ -33,13 +33,15 @@ public class DisjointSets {
         return !set1.equals(set2);
     }
 
-    public void merge(Node node1, Node node2) {
-        mergeSet(findSet(node1), findSet(node2));
+    public void merge(Node node1, Node node2, boolean deleteSet) {
+        mergeSet(findSet(node1), findSet(node2), deleteSet);
     }
 
-    private void mergeSet(DisjointSet set1, DisjointSet set2) {
-        set1.merge(set2);
-        sets.remove(set2);
+    private void mergeSet(DisjointSet set1, DisjointSet set2, boolean deleteSet) {
+        set2.merge(set1);
+        if (deleteSet) {
+            sets.remove(set1);
+        }
     }
 
     @Override
@@ -57,7 +59,15 @@ public class DisjointSets {
         sets.add(set);
     }
 
-    class DisjointSet {
+    public int size() {
+        return sets.size();
+    }
+
+    public List<DisjointSet> get() {
+        return sets;
+    }
+
+    public class DisjointSet {
 
         Node representative;
         Deque<Node> nodes = new ArrayDeque<>();
@@ -79,6 +89,11 @@ public class DisjointSets {
             }
             return null;
         }
+
+        public boolean isNodeInSet(Node node) {
+            return nodes.stream().anyMatch(n -> n.equals(node));
+        }
+
         public DisjointSet findSet(Node node) {
             if (nodes.stream().anyMatch(n -> n.equals(node))) {
                 return this;
@@ -109,6 +124,10 @@ public class DisjointSets {
         @Override
         public String toString() {
             return "[" + representative.getKey() + ": " + nodes + "]";
+        }
+
+        public Deque<Node> getNodes() {
+            return nodes;
         }
     }
 }

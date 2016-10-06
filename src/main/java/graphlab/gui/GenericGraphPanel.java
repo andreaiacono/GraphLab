@@ -58,7 +58,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     protected boolean drawTree = false;
     protected boolean drawEdgesWithColorGradient = true;
     protected boolean drawEdgesWithGrayShade = false;
-
+    protected int workingEdgesWidth = 5;
 
     // user interaction variables
     protected int clickedNodeX;
@@ -131,13 +131,13 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         }
         else {
             // draws the final step of bellman-ford
-            g2.setStroke(new BasicStroke(3));
+            g2.setStroke(new BasicStroke(workingEdgesWidth));
             Color color = GRAYS[100];
             graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, color)));
         }
 
         // draws working edges (the ones the algorithm is working on during execution)
-        g2.setStroke(new BasicStroke(3));
+        g2.setStroke(new BasicStroke(workingEdgesWidth));
         Edge edge = null;
         Iterator<Edge> edgeIterator = edges.iterator();
         while (edgeIterator.hasNext()) {
@@ -163,7 +163,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
             drawShortestPath(g2);
         }
         else if (drawTree) {
-            drawTree(g2, edges);
+            drawTree(g2, new ArrayList<>(edgesOnPath));
         }
 
         // draws the nodes
@@ -183,8 +183,8 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
      */
     private void drawTree(Graphics2D g2, List<Edge> edges) {
         try {
-            g2.setStroke(new BasicStroke(5));
-            edges.forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK));
+            g2.setStroke(new BasicStroke(6));
+            edges.forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLUE));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -194,9 +194,9 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private void drawShortestPath(Graphics2D g2) {
         try {
             Node currentNode = GraphUtils.getTargetNode(graph);
-            g2.setStroke(new BasicStroke(5));
+            g2.setStroke(new BasicStroke(6));
             while (currentNode.getPathParent() != null) {
-                drawColoredEdge(g2, currentNode, currentNode.getPathParent(), mf, Color.GREEN);
+                drawColoredEdge(g2, currentNode, currentNode.getPathParent(), mf, Color.BLUE);
                 currentNode = currentNode.getPathParent();
             }
         }
@@ -253,6 +253,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         visitedNodes = new ArrayList<>();
         visitedEdges = new ArrayList<>();
         processedNodes = new ArrayList<>();
+        edgesOnPath = new ArrayList<>();
         this.isFinished = false;
         setBorder(WORKING_BORDER);
         graph.getNodes().forEach(node -> {
@@ -357,6 +358,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         visitedEdges = new ArrayList<>();
         visitedNodes = new ArrayList<>();
         processedNodes = new ArrayList<>();
+        edgesOnPath = new ArrayList<>();
         isFinished = false;
         graph.getNodes().forEach(node -> { node.setPathParent(null); node.setStatus(NodeStatus.UNKNOWN);});
         executeStart();
@@ -371,6 +373,11 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     protected abstract void executeStart();
 
     protected abstract void executeStop();
+
+
+    public void setWorkingEdgesWidth(int workingEdgesWidth) {
+        this.workingEdgesWidth = workingEdgesWidth;
+    }
 
     public void setDrawThinEdges(boolean drawThinEdges) {
         this.drawThinEdges = drawThinEdges;

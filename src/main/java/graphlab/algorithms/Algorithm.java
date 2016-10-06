@@ -1,9 +1,24 @@
 package graphlab.algorithms;
 
 public enum Algorithm {
-    DFS,
-    BFS,
-    UCS,
+    DFS {
+        @Override
+        public String toString() {
+            return "Depth First Search";
+        }
+    },
+    BFS {
+        @Override
+        public String toString() {
+            return "Breadth First Search";
+        }
+    },
+    UCS {
+        @Override
+        public String toString() {
+            return "Uniform Cost Search";
+        }
+    },
     ASTAR {
         @Override
         public String toString() {
@@ -21,6 +36,10 @@ public enum Algorithm {
         public String toString() {
             return "Bellman-Ford";
         }
+    },
+    BORUVKA{
+        @Override
+        public String toString() { return "Borůvka"; }
     },
     PRIM {
         @Override

@@ -25,10 +25,12 @@ public class ShortestPathGraphsContainerPanel extends GenericGraphsContainerPane
 
         dijkstra = new ShortestPathGraphPanel(Algorithm.DIJKSTRA, traversalTab, new AdjacencyListGraph(graph));
         dijkstra.setDrawEdgesWithColorGradient(false);
+        dijkstra.setWorkingEdgesWidth(2);
 
         bellmanFord = new ShortestPathGraphPanel(Algorithm.BELLMANFORD, traversalTab, new AdjacencyListGraph(graph));
         bellmanFord.setDrawEdgesWithColorGradient(false);
         bellmanFord.setDrawEdgesWithGrayShade(true);
+        bellmanFord.setWorkingEdgesWidth(2);
 
         add(dijkstra);
         add(bellmanFord);
