@@ -16,12 +16,10 @@ public class MstGraphsContainerPanel extends GenericGraphsContainerPanel {
     private final MstGraphPanel prim;
     private final MstGraphPanel kruskal;
     private final MstGraphPanel boruvka;
-    private GenericTab genericTab;
 
-    public MstGraphsContainerPanel(GenericTab searchTab, GenericControlPanel genericControlPanel) {
+    public MstGraphsContainerPanel(GenericTab mtsTab, GenericControlPanel genericControlPanel) {
 
-        super(searchTab, genericControlPanel);
-        this.genericTab = searchTab;
+        super(mtsTab, genericControlPanel);
 
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
@@ -29,19 +27,19 @@ public class MstGraphsContainerPanel extends GenericGraphsContainerPanel {
         // creates an undirected graph
         graph = GraphUtils.createRandomGraph(genericControlPanel.getNodesNumber(), genericControlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
 
-        boruvka = new MstGraphPanel(Algorithm.BORUVKA, searchTab, new AdjacencyListGraph(graph));
+        boruvka = new MstGraphPanel(Algorithm.BORUVKA, mtsTab, new AdjacencyListGraph(graph));
         boruvka.setDrawEdgesWithColorGradient(false);
         boruvka.setWorkingEdgesWidth(2);
         addGraphPanel(boruvka);
         add(boruvka);
         
-        prim = new MstGraphPanel(Algorithm.PRIM, searchTab, new AdjacencyListGraph(graph));
+        prim = new MstGraphPanel(Algorithm.PRIM, mtsTab, new AdjacencyListGraph(graph));
         prim.setDrawEdgesWithColorGradient(false);
         prim.setWorkingEdgesWidth(2);
         addGraphPanel(prim);
         add(prim);
 
-        kruskal = new MstGraphPanel(Algorithm.KRUSKAL, searchTab, new AdjacencyListGraph(graph));
+        kruskal = new MstGraphPanel(Algorithm.KRUSKAL, mtsTab, new AdjacencyListGraph(graph));
         kruskal.setDrawEdgesWithColorGradient(false);
         kruskal.setWorkingEdgesWidth(2);
         addGraphPanel(kruskal);

@@ -1,5 +1,6 @@
 package graphlab.gui;
 
+import graphlab.gui.connectedcomponents.CcTab;
 import graphlab.gui.minimumspanningtree.MstTab;
 import graphlab.gui.search.SearchTab;
 import graphlab.gui.shortestpath.ShortestPathTab;
@@ -39,6 +40,7 @@ public class Main extends JFrame {
         tabbedPane.addTab("Search", new SearchTab(this));
         tabbedPane.addTab("Shortest Path", new ShortestPathTab(this));
         tabbedPane.addTab("Minimum Spanning Tree", new MstTab(this));
+        tabbedPane.addTab("Connected Components", new CcTab(this));
         add(tabbedPane);
         add(createStatusPanel(), BorderLayout.SOUTH);
 

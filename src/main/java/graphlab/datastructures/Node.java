@@ -1,5 +1,6 @@
 package graphlab.datastructures;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class Node {
     private boolean isStartNode = false;
     private boolean isTargetNode = false;
     private Node pathParent;
+    private Color color;
 
     public Node(Node node) {
         this.key = node.getKey();
@@ -46,7 +48,6 @@ public class Node {
         if (getKey() != node.getKey()) return false;
         if (getX() != node.getX()) return false;
         return getY() == node.getY();
-
     }
 
     @Override
@@ -127,4 +128,14 @@ public class Node {
     public String toString(int distanceFromTargetNode) {
         return "Node [" + key + "] - Coords: (" + x + "," + y + ") - Path cost: " + getPathCost() + " - Distance from searched: " + distanceFromTargetNode + " - Edges: " + edges + (pathParent != null ? " - Parent: " + pathParent : "");
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public boolean hasColor() {return color != null; }
 }

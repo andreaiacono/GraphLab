@@ -2,10 +2,13 @@ package graphlab.datastructures;
 
 import graphlab.utils.GraphUtils;
 
+import java.awt.*;
+
 public class Edge implements Comparable{
     private Node source;
     private Node destination;
     private int cost;
+    private Color color;
 
     public Edge(Node source, Node destination) {
         this.source = source;
@@ -57,5 +60,17 @@ public class Edge implements Comparable{
     public int compareTo(Object o) {
         Edge other = (Edge) o;
         return Integer.compare(cost, other.getCost());
+    }
+
+    public boolean hasColor() {
+        return color != null;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

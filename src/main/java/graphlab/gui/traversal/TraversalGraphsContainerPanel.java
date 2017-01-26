@@ -16,12 +16,10 @@ public class TraversalGraphsContainerPanel extends GenericGraphsContainerPanel {
 
     private final GenericGraphPanel bfsGraph;
     private final GenericGraphPanel dfsGraph;
-    private GenericTab traversalTab;
 
     public TraversalGraphsContainerPanel(GenericTab traversalTab, GenericControlPanel genericControlPanel) {
 
         super(traversalTab, genericControlPanel);
-        this.traversalTab = traversalTab;
 
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);

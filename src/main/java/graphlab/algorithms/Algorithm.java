@@ -48,6 +48,10 @@ public enum Algorithm {
     KRUSKAL {
         @Override
         public String toString() { return "Kruskal"; }
+    },
+    CONNECTED_COMPONENTS_BFS {
+        @Override
+        public String toString() { return "BFS"; }
     }
 }
 

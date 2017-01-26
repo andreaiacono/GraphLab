@@ -13,21 +13,19 @@ public class ShortestPathGraphsContainerPanel extends GenericGraphsContainerPane
 
     private final GenericGraphPanel dijkstra;
     private final GenericGraphPanel bellmanFord;
-    private GenericTab traversalTab;
 
-    public ShortestPathGraphsContainerPanel(GenericTab traversalTab, GenericControlPanel genericControlPanel) {
+    public ShortestPathGraphsContainerPanel(GenericTab shortestPathTab, GenericControlPanel genericControlPanel) {
 
-        super(traversalTab, genericControlPanel);
-        this.traversalTab = traversalTab;
+        super(shortestPathTab, genericControlPanel);
 
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
 
-        dijkstra = new ShortestPathGraphPanel(Algorithm.DIJKSTRA, traversalTab, new AdjacencyListGraph(graph));
+        dijkstra = new ShortestPathGraphPanel(Algorithm.DIJKSTRA, shortestPathTab, new AdjacencyListGraph(graph));
         dijkstra.setDrawEdgesWithColorGradient(false);
         dijkstra.setWorkingEdgesWidth(2);
 
-        bellmanFord = new ShortestPathGraphPanel(Algorithm.BELLMANFORD, traversalTab, new AdjacencyListGraph(graph));
+        bellmanFord = new ShortestPathGraphPanel(Algorithm.BELLMANFORD, shortestPathTab, new AdjacencyListGraph(graph));
         bellmanFord.setDrawEdgesWithColorGradient(false);
         bellmanFord.setDrawEdgesWithGrayShade(true);
         bellmanFord.setWorkingEdgesWidth(2);

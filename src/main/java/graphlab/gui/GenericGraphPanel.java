@@ -54,6 +54,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
 
     // graph drawing settings
     protected boolean drawThinEdges = true;
+    protected boolean drawWorkingEdges = true;
     protected boolean drawShortestPath = false;
     protected boolean drawTree = false;
     protected boolean drawEdgesWithColorGradient = true;
@@ -137,25 +138,30 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         }
 
         // draws working edges (the ones the algorithm is working on during execution)
-        g2.setStroke(new BasicStroke(workingEdgesWidth));
-        Edge edge = null;
-        Iterator<Edge> edgeIterator = edges.iterator();
-        while (edgeIterator.hasNext()) {
-            edge = edgeIterator.next();
-            Color color = DEFAULT_EDGE_COLOR;
-            if (drawEdgesWithGrayShade) {
-                color = GRAYS[grayShade];
+        if (drawWorkingEdges) {
+            g2.setStroke(new BasicStroke(workingEdgesWidth));
+            Edge edge = null;
+            Iterator<Edge> edgeIterator = edges.iterator();
+            while (edgeIterator.hasNext()) {
+                edge = edgeIterator.next();
+                Color color = DEFAULT_EDGE_COLOR;
+                if (edge.hasColor()) {
+                    color = edge.getColor();
+                }
+                else if (drawEdgesWithGrayShade) {
+                    color = GRAYS[grayShade];
+                }
+                else if (drawEdgesWithColorGradient) {
+                    colorShade += edgeColorIncrement;
+                    color = COLOR_GRADIENT[(int) colorShade];
+                }
+                drawColoredEdge(g2, edge, mf, color);
             }
-            else if (drawEdgesWithColorGradient) {
-                colorShade += edgeColorIncrement;
-                color = COLOR_GRADIENT[(int) colorShade];
-            }
-            drawColoredEdge(g2, edge, mf, color);
-        }
 
-        // FIXME: when the shortest path procedure ends, the edge shouldn't be colored
-        if (drawEdgesWithGrayShade && edges.size()>0) {
-            drawColoredEdge(g2, edge, mf, Color.BLACK);
+            // FIXME: when the shortest path procedure ends, the edge shouldn't be colored
+            if (drawEdgesWithGrayShade && edges.size() > 0) {
+                drawColoredEdge(g2, edge, mf, Color.BLACK);
+            }
         }
 
         // draws optional paths in the graph
@@ -212,7 +218,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private void drawColoredNode(Graphics g, double mf, Node node, Color nodeColor) {
         nodeSize = (int) (25 * mf);
         Color color;
-        if (node.isStartNode()) {
+        if (node.hasColor()) {
+            color = node.getColor();
+        }
+        else if (node.isStartNode()) {
             color = Color.BLUE;
         }
         else if (node.isTargetNode() && hasSearchedNode) {
@@ -259,6 +268,8 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         graph.getNodes().forEach(node -> {
             node.setStatus(NodeStatus.UNKNOWN);
             node.setPathParent(null);
+            node.setColor(null);
+            node.getEdges().forEach(edge -> edge.setColor(null));
         });
         repaint();
     }
@@ -360,7 +371,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         processedNodes = new ArrayList<>();
         edgesOnPath = new ArrayList<>();
         isFinished = false;
-        graph.getNodes().forEach(node -> { node.setPathParent(null); node.setStatus(NodeStatus.UNKNOWN);});
+        graph.getNodes().forEach(node -> {
+            node.setPathParent(null);
+            node.setStatus(NodeStatus.UNKNOWN);
+        });
         executeStart();
     }
 

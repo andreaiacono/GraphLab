@@ -16,12 +16,10 @@ public class SearchGraphsContainerPanel extends GenericGraphsContainerPanel {
     private final SearchGraphPanel dfsGraph;
     private final SearchGraphPanel ucsGraph;
     private final SearchGraphPanel aStarGraph;
-    private GenericTab genericTab;
 
     public SearchGraphsContainerPanel(GenericTab searchTab, GenericControlPanel genericControlPanel) {
 
         super(searchTab, genericControlPanel);
-        this.genericTab = searchTab;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
