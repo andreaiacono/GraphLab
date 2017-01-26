@@ -48,7 +48,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
-        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 10, Constants.MAX_NODES, this.nodesNumber);
+        JSlider nodesSlider = new JSlider(JSlider.HORIZONTAL, 5, Constants.MAX_NODES, this.nodesNumber);
         nodesSlider.setName("nodes");
         nodesSlider.addChangeListener(this);
 

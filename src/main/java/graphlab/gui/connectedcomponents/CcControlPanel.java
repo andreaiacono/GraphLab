@@ -9,7 +9,7 @@ import graphlab.gui.Main;
  */
 public class CcControlPanel extends GenericControlPanel{
 
-    private static int DEFAULT_SPEED = 25;
+    private static int DEFAULT_SPEED = 10;
     private static int DEFAULT_NODES = 60;
     private static int DEFAULT_EDGES = 3;
 

@@ -32,7 +32,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private static final Color[] GRAYS = new Color[256];
     private static final Color[] COLOR_GRADIENT = new Color[256];
     private static final Color DEFAULT_EDGE_COLOR = new Color(100, 100, 100);
-    private static final Color KEY_COLOR = new Color(180, 180, 180);
+    private static final Color KEY_COLOR = new Color(190, 190, 190);
     private static final Border WORKING_BORDER = BorderFactory.createEtchedBorder();
     private static final Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
 

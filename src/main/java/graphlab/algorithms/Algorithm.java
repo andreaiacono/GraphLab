@@ -52,6 +52,10 @@ public enum Algorithm {
     CONNECTED_COMPONENTS_BFS {
         @Override
         public String toString() { return "BFS"; }
+    },
+    NEAREST_NEIGHBOR_TSP {
+        @Override
+        public String toString() { return "Nearest Neighbour"; }
     }
 }
 
