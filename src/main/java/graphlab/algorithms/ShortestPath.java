@@ -28,6 +28,11 @@ public class ShortestPath {
             Node node = toBeVisitedNodes.poll();
             onVisitedNode.accept(node);
             node.setStatus(NodeStatus.DISCOVERED);
+            if (node.isTargetNode()) {
+                node.setStatus(NodeStatus.PROCESSED);
+                onProcessedNode.accept(node);
+                return;
+            }
 
             for (Edge edge : node.getEdges()) {
                 onVisitedEdge.accept(edge);
