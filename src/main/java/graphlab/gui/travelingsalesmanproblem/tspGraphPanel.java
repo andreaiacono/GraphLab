@@ -30,6 +30,7 @@ public class tspGraphPanel extends GenericGraphPanel {
         this.graph = graph;
 
         drawEdgesWithColorGradient = false;
+        drawTree = true;
 
 
         setBorder(BorderFactory.createEtchedBorder());
@@ -85,11 +86,13 @@ public class tspGraphPanel extends GenericGraphPanel {
             Consumer<Node> processNode = node -> processedNodes.add(node);
             ConsumerWithException<Edge> visitEdge = edge -> {
                 visitedEdges.add(edge);
+                edgesOnPath.add(edge);
                 updateGraph();
             };
 
             ConsumerWithException<Edge> unvisitEdge = edge -> {
                 visitedEdges.remove(edge);
+                edgesOnPath.remove(edge);
                 updateGraph();
             };
 

@@ -27,7 +27,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     /**
      * graphics rendering constants
      **/
-    private static final Font ALGORITHM_NAME_FONT = new Font("Arial", Font.BOLD, 14);
+    private static final Font ALGORITHM_NAME_FONT = new Font("Arial", Font.BOLD, 12);
     private static final Font[] KEY_FONT = new Font[30];
     private static final Color[] GRAYS = new Color[256];
     private static final Color[] COLOR_GRADIENT = new Color[256];
@@ -35,6 +35,8 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private static final Color KEY_COLOR = new Color(190, 190, 190);
     private static final Border WORKING_BORDER = BorderFactory.createEtchedBorder();
     private static final Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
+    private static final Color WORKING_BACKGROUND_COLOR = new Color(190, 190, 190);
+    private static final Color FINISHED_BACKGROUND_COLOR = new Color(220, 220, 220);
 
     static {
         for (int j = 0; j < KEY_FONT.length; j++) {
@@ -59,7 +61,8 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     protected boolean drawTree = false;
     protected boolean drawEdgesWithColorGradient = true;
     protected boolean drawEdgesWithGrayShade = false;
-    protected int workingEdgesWidth = 5;
+    protected int workingEdgesWidth = 4;
+    protected float regularWidth = 0.5f;
 
     // user interaction variables
     protected int clickedNodeX;
@@ -86,7 +89,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         this.genericTab = genericTab;
         this.graph = graph;
         this.hasSearchedNode = hasSearchedNode;
-        setBackground(new Color(200, 200, 200));
+        setBackground(WORKING_BACKGROUND_COLOR);
         setBorder(WORKING_BORDER);
 
         popupMenu = new JPopupMenu();
@@ -147,12 +150,14 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         // FIXME: when changing window size, a part of the graph is lost over the border!
         mf = getPreferredSize().getHeight() / 600;
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         float edgeColorIncrement = 255 / (edges.size() != 0 ? (float) edges.size() : 255f);
         float bellmanFordIncrement = 80 / (float) graph.getEdges().size();
         float colorShade = 0f;
         int grayShade = (int) (180 - (bellmanFordIncrement * bellmanFordStep));
 
         if (drawThinEdges) {
+            g2.setStroke(new BasicStroke(regularWidth));
             graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLACK)));
         }
         else {
@@ -198,7 +203,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         }
 
         // draws the nodes
-        g2.setStroke(new BasicStroke(1));
+        g2.setStroke(new BasicStroke(regularWidth));
         graph.getNodes().forEach(node -> drawColoredNode(g2, mf, (node)));
 
         // draw algorithm's name
@@ -214,7 +219,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
      */
     private void drawTree(Graphics2D g2, List<Edge> edges) {
         try {
-            g2.setStroke(new BasicStroke(6));
+            g2.setStroke(new BasicStroke(5));
             edges.forEach(edge -> drawColoredEdge(g2, edge, mf, Color.BLUE));
         }
         catch (Exception e) {
@@ -225,7 +230,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private void drawShortestPath(Graphics2D g2) {
         try {
             Node currentNode = GraphUtils.getTargetNode(graph);
-            g2.setStroke(new BasicStroke(6));
+            g2.setStroke(new BasicStroke(5));
             while (currentNode.getPathParent() != null) {
                 drawColoredEdge(g2, currentNode, currentNode.getPathParent(), mf, Color.BLUE);
                 currentNode = currentNode.getPathParent();
@@ -296,10 +301,12 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
             node.setColor(null);
             node.getEdges().forEach(edge -> edge.setColor(null));
         });
+        setBackground(WORKING_BACKGROUND_COLOR);
         repaint();
     }
 
     public void newGraph() {
+        setBackground(WORKING_BACKGROUND_COLOR);
     }
 
     protected void updateGraph() throws Exception {
@@ -312,6 +319,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     public void setOperationAsFinished() {
         this.isFinished = true;
         setBorder(FINISHED_BORDER);
+        setBackground(FINISHED_BACKGROUND_COLOR);
         genericTab.setOperationAsFinished();
     }
 
@@ -399,7 +407,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         graph.getNodes().forEach(node -> {
             node.setPathParent(null);
             node.setStatus(NodeStatus.UNKNOWN);
+            node.setColor(null);
         });
+        graph.getEdges().forEach(edge -> edge.setColor(null));
+        setBackground(WORKING_BACKGROUND_COLOR);
         executeStart();
     }
 

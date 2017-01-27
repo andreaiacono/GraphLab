@@ -29,6 +29,9 @@ public class CcGraphPanel extends GenericGraphPanel {
         this.genericTab = ccTab;
         this.graph = graph;
         this.drawWorkingEdges = false;
+        this.drawTree = true;
+        this.hasSearchedNode = false;
+
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
 
