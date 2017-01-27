@@ -1,4 +1,4 @@
-package graphlab.gui.travelsalesmanproblem;
+package graphlab.gui.travelingsalesmanproblem;
 
 import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
@@ -25,7 +25,6 @@ public class tspGraphsContainerPanel extends GenericGraphsContainerPanel {
 
         nearestNeighbor = new tspGraphPanel(Algorithm.NEAREST_NEIGHBOR_TSP, tspTab, new AdjacencyListGraph(graph));
         add(nearestNeighbor);
-
         addGraphPanel(nearestNeighbor);
     }
 }

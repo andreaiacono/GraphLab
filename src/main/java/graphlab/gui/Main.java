@@ -4,7 +4,7 @@ import graphlab.gui.connectedcomponents.CcTab;
 import graphlab.gui.minimumspanningtree.MstTab;
 import graphlab.gui.search.SearchTab;
 import graphlab.gui.shortestpath.ShortestPathTab;
-import graphlab.gui.travelsalesmanproblem.tspTab;
+import graphlab.gui.travelingsalesmanproblem.tspTab;
 import graphlab.gui.traversal.TraversalTab;
 
 import javax.swing.*;
@@ -42,7 +42,7 @@ public class Main extends JFrame {
         tabbedPane.addTab("Shortest Path", new ShortestPathTab(this));
         tabbedPane.addTab("Minimum Spanning Tree", new MstTab(this));
         tabbedPane.addTab("Connected Components", new CcTab(this));
-        tabbedPane.addTab("Travel Salesman Problem", new tspTab(this));
+        tabbedPane.addTab("Traveling Salesman Problem", new tspTab(this));
         add(tabbedPane);
         add(createStatusPanel(), BorderLayout.SOUTH);
 

@@ -1,4 +1,4 @@
-package graphlab.gui.travelsalesmanproblem;
+package graphlab.gui.travelingsalesmanproblem;
 
 import graphlab.gui.GenericTab;
 import graphlab.gui.Main;

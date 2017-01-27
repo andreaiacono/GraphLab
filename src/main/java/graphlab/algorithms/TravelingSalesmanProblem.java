@@ -9,7 +9,7 @@ import graphlab.utils.GraphUtils;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class TravelSalesmanProblem {
+public class TravelingSalesmanProblem {
 
     public static void nearestNeighbor(AdjacencyListGraph graph, ConsumerWithException<Edge> onUnvisitedEdge, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
 
@@ -17,10 +17,10 @@ public class TravelSalesmanProblem {
         Node current = startingNode;
         Set<Node> visitedNodes = new HashSet<>();
 
-        tsp(graph, current, startingNode, visitedNodes, onUnvisitedEdge, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled);
+        nn(graph, current, startingNode, visitedNodes, onUnvisitedEdge, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled);
     }
 
-    private static boolean tsp(AdjacencyListGraph graph, Node current, Node startingNode, Set<Node> visitedNodes, ConsumerWithException<Edge> onUnvisitedEdges, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception{
+    private static boolean nn(AdjacencyListGraph graph, Node current, Node startingNode, Set<Node> visitedNodes, ConsumerWithException<Edge> onUnvisitedEdges, ConsumerWithException<Node> onVisitedNode, ConsumerWithException<Edge> onVisitedEdge, Consumer<Node> onProcessedNode, Boolean isCanceled) throws Exception {
 
         if (isCanceled) {
             return false;
@@ -33,13 +33,13 @@ public class TravelSalesmanProblem {
         }
         List<Edge> edges = new ArrayList<>(current.getEdges());
         Collections.sort(edges, Comparator.comparingInt(Edge::getCost));
-        for (Edge edge: edges) {
+        for (Edge edge : edges) {
             Node destination = edge.getDestination();
-            if (!visitedNodes.contains(destination) || (visitedNodes.size() == graph.getNodes().size() -2 && destination.equals(startingNode))) {
+            if (!visitedNodes.contains(destination) || (visitedNodes.size() == graph.getNodes().size() - 2 && destination.equals(startingNode))) {
                 onVisitedEdge.accept(edge);
                 visitedNodes.add(destination);
                 destination.setPathParent(current);
-                if (tsp(graph, destination, startingNode, visitedNodes, onUnvisitedEdges, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled)) {
+                if (nn(graph, destination, startingNode, visitedNodes, onUnvisitedEdges, onVisitedNode, onVisitedEdge, onProcessedNode, isCanceled)) {
                     return true;
                 }
                 destination.setPathParent(null);

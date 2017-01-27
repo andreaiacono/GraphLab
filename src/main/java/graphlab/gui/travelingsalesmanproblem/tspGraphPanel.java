@@ -1,7 +1,7 @@
-package graphlab.gui.travelsalesmanproblem;
+package graphlab.gui.travelingsalesmanproblem;
 
 import graphlab.algorithms.Algorithm;
-import graphlab.algorithms.TravelSalesmanProblem;
+import graphlab.algorithms.TravelingSalesmanProblem;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
@@ -15,9 +15,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static graphlab.utils.Constants.X_SHIFT;
-import static graphlab.utils.Constants.Y_SHIFT;
 
 /**
  * The square panel where the graph is drawn and animated.
@@ -60,9 +57,7 @@ public class tspGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
-        return new Dimension(panelSide, panelSide);
+        return getPreferredSizeForTwoPanels();
     }
 
     class GraphCcWorker extends SwingWorker<Void, Void> {
@@ -100,7 +95,7 @@ public class tspGraphPanel extends GenericGraphPanel {
 
             switch (algorithm) {
                 case NEAREST_NEIGHBOR_TSP:
-                    TravelSalesmanProblem.nearestNeighbor(graph, unvisitEdge, visitNode, visitEdge, processNode, isCanceled);
+                    TravelingSalesmanProblem.nearestNeighbor(graph, unvisitEdge, visitNode, visitEdge, processNode, isCanceled);
                     break;
             }
 

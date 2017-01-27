@@ -112,6 +112,31 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         repaint();
     }
 
+    protected Dimension getPreferredSizeForOnePanel() {
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
+        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
+        return new Dimension(panelSide, panelSide);
+    }
+
+    protected Dimension getPreferredSizeForFourPanels() {
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
+        panelSide = dimension.width < dimension.height ? dimension.width / 2 - X_SHIFT : dimension.height / 2 - Y_SHIFT;
+        return new Dimension(panelSide, panelSide);
+    }
+
+
+    protected Dimension getPreferredSizeForThreePanels() {
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
+        panelSide = dimension.width < dimension.height * 3 ? dimension.width / 3 - X_SHIFT : dimension.height - Y_SHIFT;
+        return new Dimension(panelSide, panelSide);
+    }
+
+    protected Dimension getPreferredSizeForTwoPanels() {
+        Dimension dimension = genericTab.getGraphsContainer().getSize();
+        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
+        return new Dimension(panelSide, panelSide);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

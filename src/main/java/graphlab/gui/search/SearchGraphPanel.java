@@ -14,9 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-import static graphlab.utils.Constants.X_SHIFT;
-import static graphlab.utils.Constants.Y_SHIFT;
-
 /**
  * The square panel where the search graph is drawn and animated.
  */
@@ -43,9 +40,7 @@ public class SearchGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width / 2 - X_SHIFT : dimension.height / 2 - Y_SHIFT;
-        return new Dimension(panelSide, panelSide);
+        return getPreferredSizeForFourPanels();
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {

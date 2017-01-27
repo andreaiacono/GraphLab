@@ -14,9 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-import static graphlab.utils.Constants.X_SHIFT;
-import static graphlab.utils.Constants.Y_SHIFT;
-
 /**
  * The square panel where the MST graph is drawn and animated.
  */
@@ -46,9 +43,7 @@ public class MstGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 3 ? dimension.width / 3 - X_SHIFT : dimension.height - Y_SHIFT;
-        return new Dimension(panelSide, panelSide);
+        return getPreferredSizeForThreePanels();
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {

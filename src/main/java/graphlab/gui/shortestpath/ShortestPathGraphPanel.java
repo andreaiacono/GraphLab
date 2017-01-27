@@ -1,12 +1,11 @@
 package graphlab.gui.shortestpath;
 
+import graphlab.algorithms.Algorithm;
 import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.datastructures.Edge;
 import graphlab.datastructures.Node;
-import graphlab.algorithms.Algorithm;
-import graphlab.datastructures.NodeStatus;
-import graphlab.gui.GenericTab;
 import graphlab.gui.GenericGraphPanel;
+import graphlab.gui.GenericTab;
 import graphlab.utils.Constants;
 import graphlab.utils.ConsumerWithException;
 
@@ -14,9 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-
-import static graphlab.utils.Constants.X_SHIFT;
-import static graphlab.utils.Constants.Y_SHIFT;
 
 
 /**
@@ -47,9 +43,7 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
-        return new Dimension(panelSide, panelSide);
+       return getPreferredSizeForTwoPanels();
     }
 
     @Override

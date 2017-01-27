@@ -1,21 +1,20 @@
 package graphlab.gui.traversal;
 
+import graphlab.algorithms.Algorithm;
 import graphlab.algorithms.Search;
-import graphlab.datastructures.*;
+import graphlab.datastructures.AdjacencyListGraph;
+import graphlab.datastructures.Edge;
+import graphlab.datastructures.Node;
 import graphlab.gui.GenericGraphPanel;
 import graphlab.gui.GenericTab;
-import graphlab.algorithms.Algorithm;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static graphlab.utils.Constants.X_SHIFT;
-import static graphlab.utils.Constants.Y_SHIFT;
 
 /**
  * The square panel where the traversal graph is drawn and animated.
@@ -54,9 +53,7 @@ public class TraversalGraphPanel extends GenericGraphPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
-        return new Dimension(panelSide, panelSide);
+        return getPreferredSizeForTwoPanels();
     }
 
     class GraphTraversalWorker extends SwingWorker<Void, Void> {
