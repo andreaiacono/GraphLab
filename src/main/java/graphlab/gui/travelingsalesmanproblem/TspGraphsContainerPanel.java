@@ -12,18 +12,18 @@ import java.awt.*;
 /**
  * The panel that contains all the GenericGraphPanel for the TSP.
  */
-public class tspGraphsContainerPanel extends GenericGraphsContainerPanel {
+public class TspGraphsContainerPanel extends GenericGraphsContainerPanel {
 
     private final GenericGraphPanel nearestNeighbor;
 
-    public tspGraphsContainerPanel(GenericTab tspTab, GenericControlPanel genericControlPanel) {
+    public TspGraphsContainerPanel(GenericTab tspTab, GenericControlPanel genericControlPanel) {
 
         super(tspTab, genericControlPanel);
 
         FlowLayout flowLayout = new FlowLayout();
         setLayout(flowLayout);
 
-        nearestNeighbor = new tspGraphPanel(Algorithm.NEAREST_NEIGHBOR_TSP, tspTab, new AdjacencyListGraph(graph));
+        nearestNeighbor = new TspGraphPanel(Algorithm.NEAREST_NEIGHBOR_TSP, tspTab, new AdjacencyListGraph(graph));
         add(nearestNeighbor);
         addGraphPanel(nearestNeighbor);
     }

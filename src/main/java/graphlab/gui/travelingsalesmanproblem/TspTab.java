@@ -9,13 +9,13 @@ import java.awt.*;
 /**
  * This panel is the TSP tab in the main window.
  */
-public class tspTab extends GenericTab {
+public class TspTab extends GenericTab {
 
-    public tspTab(Main main) {
+    public TspTab(Main main) {
 
         super(main);
-        controlPanel = new tspControlPanel(main, this);
-        graphsContainerPanel = new tspGraphsContainerPanel(this, controlPanel);
+        controlPanel = new TspControlPanel(main, this);
+        graphsContainerPanel = new TspGraphsContainerPanel(this, controlPanel);
 
         divider = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, graphsContainerPanel, controlPanel);
         divider.setDividerLocation(450);

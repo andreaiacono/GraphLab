@@ -19,10 +19,11 @@ public class GraphUtils {
      * @param maxValue    the max value a node's key can have
      * @return
      */
-    public static AdjacencyListGraph createRandomGraph(int nodesNumber, int edgesNumber, int maxValue, boolean undirected) {
+    public static AdjacencyListGraph createRandomGraph(int nodesNumber, int edgesNumber, int maxValue, boolean directed) {
 
         Random random = new Random();
         AdjacencyListGraph graph = new AdjacencyListGraph();
+        graph.setDirected(directed);
 
         // creates the nodes
         for (int j = 0; j < nodesNumber; j++) {
@@ -45,7 +46,7 @@ public class GraphUtils {
                     int min = Integer.MAX_VALUE;
                     int index = 0;
                     for (int j = 0; j < nodes.size(); j++) {
-                        final int jj = j;
+                        final int jj = j; // needed a final variable instead of j
                         if (i == j || IntStream.of(selectedEdges).anyMatch(x -> x == jj)) continue;
                         Node node = nodes.get(j);
                         int distance = Math.abs(node.getX() - currentNode.getX()) + Math.abs(node.getY() - currentNode.getY());
@@ -56,7 +57,7 @@ public class GraphUtils {
                     }
                     selectedEdges[k] = index;
                     currentNode.addEdge(nodes.get(index));
-                    if (undirected) {
+                    if (!directed) {
                         nodes.get(index).addEdge(currentNode);
                     }
                 }

@@ -286,6 +286,43 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
                 (int) (sourceNode.getY() * mf) + Y_SHIFT,
                 (int) (destinationNode.getX() * mf) + X_SHIFT,
                 (int) (destinationNode.getY() * mf) + Y_SHIFT);
+
+        // draws an arrow for edge direction
+        if (graph.isDirected()) {
+
+            int deltaY = destinationNode.getY() - sourceNode.getY();
+            int deltaX = destinationNode.getX() - sourceNode.getX();
+            int edgeLength = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY) - (int) (nodeSize / 2 / mf);
+
+            double angle = Math.atan2(deltaY, deltaX);
+            double angleDelta = 2 * Math.PI / 20;
+            int arrowArmLength = 20;
+//            if (deltaY < nodeSize * 2 && deltaY < nodeSize * 2) {
+//            arrowArmLength = 5;
+//            }
+            int nodeContactX = sourceNode.getX() + (int) (Math.cos(angle) * (edgeLength));
+            int nodeContactY = sourceNode.getY() + (int) (Math.sin(angle) * (edgeLength));
+
+            int leftArrowArmX = nodeContactX - (int) (Math.cos(angle - angleDelta) * arrowArmLength);
+            int leftArrowArmY = nodeContactY - (int) (Math.sin(angle - angleDelta) * arrowArmLength);
+
+            int rightArrowArmX = nodeContactX - (int) (Math.cos(angle + angleDelta) * arrowArmLength);
+            int rightArrowArmY = nodeContactY - (int) (Math.sin(angle + angleDelta) * arrowArmLength);
+
+            g.drawLine(
+                    (int) (nodeContactX * mf) + X_SHIFT,
+                    (int) (nodeContactY * mf) + Y_SHIFT,
+                    (int) (leftArrowArmX * mf) + X_SHIFT,
+                    (int) (leftArrowArmY * mf) + Y_SHIFT
+            );
+
+            g.drawLine(
+                    (int) (nodeContactX * mf) + X_SHIFT,
+                    (int) (nodeContactY * mf) + Y_SHIFT,
+                    (int) (rightArrowArmX * mf) + X_SHIFT,
+                    (int) (rightArrowArmY * mf) + Y_SHIFT
+            );
+        }
     }
 
     public void reset() {

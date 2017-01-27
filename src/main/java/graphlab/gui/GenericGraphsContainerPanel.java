@@ -18,11 +18,11 @@ public class GenericGraphsContainerPanel extends JPanel {
     public GenericGraphsContainerPanel(GenericTab genericTab, GenericControlPanel controlPanel) {
         this.controlPanel = controlPanel;
         genericGraphPanels = new ArrayList<>();
-        graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
+        graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, controlPanel.getIsDirected());
     }
 
     public void newGraph() {
-        AdjacencyListGraph graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
+        AdjacencyListGraph graph = GraphUtils.createRandomGraph(controlPanel.getNodesNumber(), controlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, controlPanel.getIsDirected());
         genericGraphPanels.forEach(panel -> panel.setGraph(new AdjacencyListGraph(graph)));
         genericGraphPanels.forEach(panel -> panel.newGraph());
     }

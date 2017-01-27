@@ -19,11 +19,11 @@ import java.util.function.Consumer;
 /**
  * The square panel where the graph is drawn and animated.
  */
-public class tspGraphPanel extends GenericGraphPanel {
+public class TspGraphPanel extends GenericGraphPanel {
 
     private GraphCcWorker ccWorker;
 
-    public tspGraphPanel(Algorithm algorithm, GenericTab ccTab, AdjacencyListGraph graph) {
+    public TspGraphPanel(Algorithm algorithm, GenericTab ccTab, AdjacencyListGraph graph) {
         super(algorithm, ccTab, graph, false);
         this.algorithm = algorithm;
         this.genericTab = ccTab;

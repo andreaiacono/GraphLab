@@ -25,7 +25,7 @@ public class MstGraphsContainerPanel extends GenericGraphsContainerPanel {
         setLayout(flowLayout);
 
         // creates an undirected graph
-        graph = GraphUtils.createRandomGraph(genericControlPanel.getNodesNumber(), genericControlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, true);
+        graph = GraphUtils.createRandomGraph(genericControlPanel.getNodesNumber(), genericControlPanel.getEdgesNumber(), Constants.MAX_NODE_VALUE, graph.isDirected());
 
         boruvka = new MstGraphPanel(Algorithm.BORUVKA, mtsTab, new AdjacencyListGraph(graph));
         boruvka.setDrawEdgesWithColorGradient(false);

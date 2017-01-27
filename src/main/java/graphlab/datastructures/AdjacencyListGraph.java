@@ -1,7 +1,6 @@
 package graphlab.datastructures;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +12,7 @@ public class AdjacencyListGraph extends Graph {
     public AdjacencyListGraph(AdjacencyListGraph graph) {
         graph.getNodes().forEach(node -> nodes.add(new Node(node)));
         graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> nodes.get(node.getKey()).addEdge(nodes.get(edge.getDestination().getKey()))));
+        setDirected(graph.isDirected());
     }
 
     public AdjacencyListGraph() {

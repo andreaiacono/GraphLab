@@ -5,12 +5,15 @@ import graphlab.utils.Constants;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * This is a generic control panel, extended by single algorithms
  */
-public abstract class GenericControlPanel extends JPanel implements ChangeListener {
+public abstract class GenericControlPanel extends JPanel implements ChangeListener, ItemListener {
 
+    private final JCheckBox directedCheckBox;
     private Main main;
     protected GenericTab genericTab;
     private String operationName;
@@ -20,6 +23,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
     private final JButton resetButton;
     private final JButton newGraphButton;
     private final JButton startButton;
+    private boolean isDirected;
 
 
     public GenericControlPanel(Main main, GenericTab genericTab, String operationName, int edgesNumber, int nodesNumber, int speed) {
@@ -38,6 +42,8 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, Constants.MAX_EDGES, this.edgesNumber);
         edgeSlider.setName("edges");
         edgeSlider.addChangeListener(this);
+        edgeSlider.setPaintTicks(true);
+        edgeSlider.setPaintLabels(true);
 
         sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, this);
         sl.putConstraint(SpringLayout.SOUTH, edgeLabel, -13, SpringLayout.SOUTH, this);
@@ -72,6 +78,12 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         sl.putConstraint(SpringLayout.EAST, speedSlider, -5, SpringLayout.EAST, this);
         sl.putConstraint(SpringLayout.SOUTH, speedSlider, -15, SpringLayout.NORTH, nodesSlider);
 
+
+        directedCheckBox = new JCheckBox("Directed");
+        directedCheckBox.setSelected(false);
+        directedCheckBox.addItemListener(this);
+        sl.putConstraint(SpringLayout.WEST, directedCheckBox, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.SOUTH, directedCheckBox, -8, SpringLayout.NORTH, speedSlider);
 
         // buttons
         resetButton = new JButton("Reset");
@@ -131,6 +143,7 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         add(nodesSlider);
         add(edgeLabel);
         add(edgeSlider);
+        add(directedCheckBox);
     }
 
     @Override
@@ -169,5 +182,18 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
 
     public String getOperationName() {
         return operationName;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        Object source = e.getItemSelectable();
+
+        if (source == directedCheckBox) {
+            isDirected = directedCheckBox.isSelected();
+        }
+    }
+
+    public boolean getIsDirected() {
+        return isDirected;
     }
 }
