@@ -36,7 +36,7 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
     private static final Border WORKING_BORDER = BorderFactory.createEtchedBorder();
     private static final Border FINISHED_BORDER = BorderFactory.createEtchedBorder(Color.BLUE, Color.LIGHT_GRAY);
     private static final Color WORKING_BACKGROUND_COLOR = new Color(190, 190, 190);
-    private static final Color FINISHED_BACKGROUND_COLOR = new Color(220, 220, 220);
+    private static final Color FINISHED_BACKGROUND_COLOR = new Color(210, 210, 210);
 
     static {
         for (int j = 0; j < KEY_FONT.length; j++) {
@@ -115,28 +115,43 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         repaint();
     }
 
-    protected Dimension getPreferredSizeForOnePanel() {
+    @Override
+    public Dimension getPreferredSize() {
+        switch (genericTab.getGraphsContainer().genericGraphPanels.size()) {
+            case 1:
+                return getPreferredSizeForOnePanel();
+            case 2:
+                return getPreferredSizeForTwoPanels();
+            case 3:
+                return getPreferredSizeForThreePanels();
+            case 4:
+                return getPreferredSizeForFourPanels();
+            default:
+                return getPreferredSizeForOnePanel();
+        }
+    }
+
+    private Dimension getPreferredSizeForOnePanel() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = (dimension.width < dimension.height ? dimension.width : dimension.height) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
-    protected Dimension getPreferredSizeForFourPanels() {
+    private Dimension getPreferredSizeForTwoPanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height ? dimension.width / 2 - X_SHIFT : dimension.height / 2 - Y_SHIFT;
+        panelSide = (dimension.width < dimension.height * 2 ? dimension.width / 2: dimension.height) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
-
-    protected Dimension getPreferredSizeForThreePanels() {
+    private Dimension getPreferredSizeForThreePanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 3 ? dimension.width / 3 - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = (dimension.width < dimension.height * 3 ? dimension.width / 3: dimension.height) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
-    protected Dimension getPreferredSizeForTwoPanels() {
+    private Dimension getPreferredSizeForFourPanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
+        panelSide = (dimension.width < dimension.height ? dimension.width / 2 : dimension.height / 2) - 5 ;
         return new Dimension(panelSide, panelSide);
     }
 
@@ -297,9 +312,9 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
             double angle = Math.atan2(deltaY, deltaX);
             double angleDelta = 2 * Math.PI / 20;
             int arrowArmLength = 20;
-//            if (deltaY < nodeSize * 2 && deltaY < nodeSize * 2) {
-//            arrowArmLength = 5;
-//            }
+            if (edgeLength < nodeSize*2/mf) {
+                arrowArmLength = edgeLength/3;
+            }
             int nodeContactX = sourceNode.getX() + (int) (Math.cos(angle) * (edgeLength));
             int nodeContactY = sourceNode.getY() + (int) (Math.sin(angle) * (edgeLength));
 

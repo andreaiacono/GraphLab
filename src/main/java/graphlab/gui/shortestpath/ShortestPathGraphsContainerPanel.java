@@ -1,10 +1,13 @@
 package graphlab.gui.shortestpath;
 
-import graphlab.datastructures.AdjacencyListGraph;
 import graphlab.algorithms.Algorithm;
-import graphlab.gui.*;
+import graphlab.datastructures.AdjacencyListGraph;
+import graphlab.gui.GenericControlPanel;
+import graphlab.gui.GenericGraphPanel;
+import graphlab.gui.GenericGraphsContainerPanel;
+import graphlab.gui.GenericTab;
 
-import java.awt.*;
+import javax.swing.*;
 
 /**
  * The panel that contains all the GenericGraphPanel for the shortest path tab.
@@ -18,8 +21,8 @@ public class ShortestPathGraphsContainerPanel extends GenericGraphsContainerPane
 
         super(shortestPathTab, genericControlPanel);
 
-        FlowLayout flowLayout = new FlowLayout();
-        setLayout(flowLayout);
+        SpringLayout sl = new SpringLayout();
+        setLayout(sl);
 
         dijkstra = new ShortestPathGraphPanel(Algorithm.DIJKSTRA, shortestPathTab, new AdjacencyListGraph(graph));
         dijkstra.setDrawEdgesWithColorGradient(false);
@@ -35,6 +38,12 @@ public class ShortestPathGraphsContainerPanel extends GenericGraphsContainerPane
 
         addGraphPanel(dijkstra);
         addGraphPanel(bellmanFord);
+
+        sl.putConstraint(SpringLayout.WEST, dijkstra, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.NORTH, dijkstra, 5, SpringLayout.NORTH, this);
+
+        sl.putConstraint(SpringLayout.WEST, bellmanFord, 5, SpringLayout.EAST, dijkstra);
+        sl.putConstraint(SpringLayout.NORTH, bellmanFord, 5, SpringLayout.NORTH, this);
     }
 
 }

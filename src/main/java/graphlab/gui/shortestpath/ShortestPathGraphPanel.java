@@ -10,7 +10,6 @@ import graphlab.utils.Constants;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
@@ -41,10 +40,6 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
         shortestPathWorker.execute();
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-       return getPreferredSizeForTwoPanels();
-    }
 
     @Override
     public void reset() {

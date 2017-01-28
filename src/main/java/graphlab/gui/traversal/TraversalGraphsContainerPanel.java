@@ -7,7 +7,7 @@ import graphlab.gui.GenericGraphPanel;
 import graphlab.gui.GenericGraphsContainerPanel;
 import graphlab.gui.GenericTab;
 
-import java.awt.*;
+import javax.swing.*;
 
 /**
  * The panel that contains all the GenericGraphPanel for the traversal.
@@ -21,8 +21,8 @@ public class TraversalGraphsContainerPanel extends GenericGraphsContainerPanel {
 
         super(traversalTab, genericControlPanel);
 
-        FlowLayout flowLayout = new FlowLayout();
-        setLayout(flowLayout);
+        SpringLayout sl = new SpringLayout();
+        setLayout(sl);
 
         dfsGraph = new TraversalGraphPanel(Algorithm.DFS, traversalTab, new AdjacencyListGraph(graph));
         bfsGraph = new TraversalGraphPanel(Algorithm.BFS, traversalTab, new AdjacencyListGraph(graph));
@@ -31,15 +31,12 @@ public class TraversalGraphsContainerPanel extends GenericGraphsContainerPanel {
 
         addGraphPanel(dfsGraph);
         addGraphPanel(bfsGraph);
+
+        sl.putConstraint(SpringLayout.WEST, dfsGraph, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.NORTH, dfsGraph, 5, SpringLayout.NORTH, this);
+
+        sl.putConstraint(SpringLayout.WEST, bfsGraph, 5, SpringLayout.EAST, dfsGraph);
+        sl.putConstraint(SpringLayout.NORTH, bfsGraph, 5, SpringLayout.NORTH, this);
     }
-
-//    @Override
-//    public Dimension getPreferredSize() {
-//        Dimension dimension = traversalTab.getSize();
-//        int panelSide = dimension.width < dimension.height * 2 ? dimension.width / 2 - X_SHIFT : dimension.height - Y_SHIFT;
-//        return new Dimension(panelSide, panelSide);
-//    }
-
-
 }
 

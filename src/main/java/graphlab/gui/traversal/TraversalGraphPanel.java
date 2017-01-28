@@ -50,12 +50,6 @@ public class TraversalGraphPanel extends GenericGraphPanel {
         traversalWorker.cancel(true);
     }
 
-
-    @Override
-    public Dimension getPreferredSize() {
-        return getPreferredSizeForTwoPanels();
-    }
-
     class GraphTraversalWorker extends SwingWorker<Void, Void> {
 
         List<Node> visitedNodes;

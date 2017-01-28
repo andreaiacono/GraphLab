@@ -11,7 +11,6 @@ import graphlab.utils.Constants;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.function.Consumer;
 
 /**
@@ -39,11 +38,6 @@ public class MstGraphPanel extends GenericGraphPanel {
 
     public void executeStop() {
         searchWorker.cancel(true);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return getPreferredSizeForThreePanels();
     }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {

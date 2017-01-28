@@ -11,7 +11,6 @@ import graphlab.utils.Constants;
 import graphlab.utils.ConsumerWithException;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.function.Consumer;
 
 /**
@@ -38,10 +37,6 @@ public class SearchGraphPanel extends GenericGraphPanel {
         searchWorker.cancel(true);
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return getPreferredSizeForFourPanels();
-    }
 
     class GraphSearchWorker extends SwingWorker<Void, Void> {
 

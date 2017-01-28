@@ -38,6 +38,12 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         SpringLayout sl = new SpringLayout();
         setLayout(sl);
 
+        directedCheckBox = new JCheckBox("Directed");
+        directedCheckBox.setSelected(false);
+        directedCheckBox.addItemListener(this);
+        sl.putConstraint(SpringLayout.WEST, directedCheckBox, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.SOUTH, directedCheckBox, 0, SpringLayout.SOUTH, this);
+
         JLabel edgeLabel = new JLabel("Edges: ");
         JSlider edgeSlider = new JSlider(JSlider.HORIZONTAL, 1, Constants.MAX_EDGES, this.edgesNumber);
         edgeSlider.setName("edges");
@@ -46,11 +52,11 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         edgeSlider.setPaintLabels(true);
 
         sl.putConstraint(SpringLayout.WEST, edgeLabel, 5, SpringLayout.WEST, this);
-        sl.putConstraint(SpringLayout.SOUTH, edgeLabel, -13, SpringLayout.SOUTH, this);
+        sl.putConstraint(SpringLayout.SOUTH, edgeLabel, -10, SpringLayout.NORTH, directedCheckBox);
 
         sl.putConstraint(SpringLayout.WEST, edgeSlider, 5, SpringLayout.EAST, edgeLabel);
         sl.putConstraint(SpringLayout.EAST, edgeSlider, -5, SpringLayout.EAST, this);
-        sl.putConstraint(SpringLayout.SOUTH, edgeSlider, -5, SpringLayout.SOUTH, this);
+        sl.putConstraint(SpringLayout.SOUTH, edgeSlider, 5, SpringLayout.NORTH, directedCheckBox);
 
 
         JLabel nodesLabel = new JLabel("Nodes: ");
@@ -77,13 +83,6 @@ public abstract class GenericControlPanel extends JPanel implements ChangeListen
         sl.putConstraint(SpringLayout.WEST, speedSlider, 5, SpringLayout.EAST, speedLabel);
         sl.putConstraint(SpringLayout.EAST, speedSlider, -5, SpringLayout.EAST, this);
         sl.putConstraint(SpringLayout.SOUTH, speedSlider, -15, SpringLayout.NORTH, nodesSlider);
-
-
-        directedCheckBox = new JCheckBox("Directed");
-        directedCheckBox.setSelected(false);
-        directedCheckBox.addItemListener(this);
-        sl.putConstraint(SpringLayout.WEST, directedCheckBox, 5, SpringLayout.WEST, this);
-        sl.putConstraint(SpringLayout.SOUTH, directedCheckBox, -8, SpringLayout.NORTH, speedSlider);
 
         // buttons
         resetButton = new JButton("Reset");

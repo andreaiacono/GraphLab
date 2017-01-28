@@ -55,12 +55,6 @@ public class TspGraphPanel extends GenericGraphPanel {
         ccWorker.cancel(true);
     }
 
-
-    @Override
-    public Dimension getPreferredSize() {
-        return getPreferredSizeForTwoPanels();
-    }
-
     class GraphCcWorker extends SwingWorker<Void, Void> {
 
         List<Node> visitedNodes;

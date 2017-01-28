@@ -54,12 +54,6 @@ public class CcGraphPanel extends GenericGraphPanel {
         ccWorker.cancel(true);
     }
 
-
-    @Override
-    public Dimension getPreferredSize() {
-        return getPreferredSizeForOnePanel();
-    }
-
     class GraphCcWorker extends SwingWorker<Void, Void> {
 
         List<Node> visitedNodes;

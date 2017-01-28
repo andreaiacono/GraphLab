@@ -7,7 +7,6 @@ import graphlab.gui.GenericGraphsContainerPanel;
 import graphlab.gui.GenericTab;
 
 import javax.swing.*;
-import java.awt.*;
 
 
 public class SearchGraphsContainerPanel extends GenericGraphsContainerPanel {
@@ -21,28 +20,35 @@ public class SearchGraphsContainerPanel extends GenericGraphsContainerPanel {
 
         super(searchTab, genericControlPanel);
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        SpringLayout sl = new SpringLayout();
+        setLayout(sl);
 
         dfsGraph = new SearchGraphPanel(Algorithm.DFS, searchTab, new AdjacencyListGraph(graph));
-        row1.add(dfsGraph);
-        addGraphPanel(dfsGraph);
-
         bfsGraph = new SearchGraphPanel(Algorithm.BFS, searchTab, new AdjacencyListGraph(graph));
-        addGraphPanel(bfsGraph);
-        row1.add(bfsGraph);
-
         ucsGraph = new SearchGraphPanel(Algorithm.UCS, searchTab, new AdjacencyListGraph(graph));
-        addGraphPanel(ucsGraph);
-        row2.add(ucsGraph);
-
         aStarGraph = new SearchGraphPanel(Algorithm.ASTAR, searchTab, new AdjacencyListGraph(graph));
-        addGraphPanel(aStarGraph);
-        row2.add(aStarGraph);
+        
+        add(dfsGraph);
+        add(bfsGraph);
+        add(ucsGraph);
+        add(aStarGraph);
 
-        add(row1);
-        add(row2);
+        addGraphPanel(dfsGraph);
+        addGraphPanel(bfsGraph);
+        addGraphPanel(ucsGraph);
+        addGraphPanel(aStarGraph);
+
+        sl.putConstraint(SpringLayout.WEST, dfsGraph, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.NORTH, dfsGraph, 5, SpringLayout.NORTH, this);
+
+        sl.putConstraint(SpringLayout.WEST, bfsGraph, 5, SpringLayout.EAST, dfsGraph);
+        sl.putConstraint(SpringLayout.NORTH, bfsGraph, 5, SpringLayout.NORTH, this);
+
+        sl.putConstraint(SpringLayout.WEST, ucsGraph, 5, SpringLayout.WEST, this);
+        sl.putConstraint(SpringLayout.NORTH, ucsGraph, 5, SpringLayout.SOUTH, dfsGraph);
+
+        sl.putConstraint(SpringLayout.WEST, aStarGraph, 5, SpringLayout.EAST, dfsGraph);
+        sl.putConstraint(SpringLayout.NORTH, aStarGraph, 5, SpringLayout.SOUTH, bfsGraph);
     }
 }
 
