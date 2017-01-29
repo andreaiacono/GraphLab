@@ -14,6 +14,6 @@ public class MstControlPanel extends GenericControlPanel {
     private static int DEFAULT_EDGES = 8;
 
     public MstControlPanel(Main main, GenericTab genericTab) {
-        super(main, genericTab, "Minimum Spanning Tree", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
+        super(main, genericTab, "Find", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
     }
 }

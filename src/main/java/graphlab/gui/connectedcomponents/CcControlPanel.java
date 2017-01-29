@@ -14,6 +14,6 @@ public class CcControlPanel extends GenericControlPanel{
     private static int DEFAULT_EDGES = 3;
 
     public CcControlPanel(Main main, GenericTab genericTab) {
-        super(main, genericTab, "Connected Components", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
+        super(main, genericTab, "Find", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
     }
 }

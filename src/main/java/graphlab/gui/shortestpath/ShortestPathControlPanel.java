@@ -14,6 +14,6 @@ public class ShortestPathControlPanel extends GenericControlPanel {
     private static int DEFAULT_EDGES = 35;
 
     public ShortestPathControlPanel(Main main, GenericTab genericTab) {
-        super(main, genericTab, "Shortest Path", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
+        super(main, genericTab, "Find", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
     }
 }

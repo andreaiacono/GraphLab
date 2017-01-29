@@ -51,7 +51,7 @@ public enum Algorithm {
     },
     CONNECTED_COMPONENTS_BFS {
         @Override
-        public String toString() { return "BFS"; }
+        public String toString() { return "Bread First Search"; }
     },
     NEAREST_NEIGHBOR_TSP {
         @Override

@@ -14,6 +14,6 @@ public class TspControlPanel extends GenericControlPanel{
     private static int DEFAULT_EDGES = 8;
 
     public TspControlPanel(Main main, GenericTab genericTab) {
-        super(main, genericTab, "Nearest Neighbor", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
+        super(main, genericTab, "Find", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);
     }
 }
