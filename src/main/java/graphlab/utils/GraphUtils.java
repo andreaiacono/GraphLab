@@ -44,7 +44,7 @@ public class GraphUtils {
             for (int k = 0; k < edgesNumber; k++) {
                 if (random.nextBoolean()) {
                     int min = Integer.MAX_VALUE;
-                    int index = 0;
+                    int index = -1;
                     for (int j = 0; j < nodes.size(); j++) {
                         final int jj = j; // needed a final variable instead of j
                         if (i == j || IntStream.of(selectedEdges).anyMatch(x -> x == jj)) continue;
@@ -55,10 +55,12 @@ public class GraphUtils {
                             index = j;
                         }
                     }
-                    selectedEdges[k] = index;
-                    currentNode.addEdge(nodes.get(index));
-                    if (!directed) {
-                        nodes.get(index).addEdge(currentNode);
+                    if (index >= 0) {
+                        selectedEdges[k] = index;
+                        currentNode.addEdge(nodes.get(index));
+                        if (!directed) {
+                            nodes.get(index).addEdge(currentNode);
+                        }
                     }
                 }
             }
