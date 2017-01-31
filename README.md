@@ -2,7 +2,7 @@
 is a Java Swing application that shows visually how works several graph algorithms. The application has several tabs, each of them showing a particular algorithm; each tab has a control panel on the right that let the user start the execution, stop it and create new graphs using sliders for deciding how many random nodes/edges to create and if directed or not. The user can also set a specific node as the starting node or move the nodes along the canvas just by dragging and dropping them on another position.
 
 The application has now six tabs:
-## Traversal Tab
+### Traversal Tab
 
 ![Graphlab Traverse Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/traverse.gif)
 The traversal tab shows two panels:
@@ -13,21 +13,21 @@ Before starting the traversal every node is red (UNKNOWN) and the edges are thin
 
 #### DFS
 DFS is a graph traversal algorithm that consists of these steps:
-1. selet a starting node as current node
-2. for each neighbors of this node
-3.     select this neighbor as current node
-4. goto step 2
+1  selet a starting node as current node
+2  for each neighbors of this node
+3      select this neighbor as current node
+4  goto step 2
 This means that the algorithm will traverse in depth all the edges of the graph, since it will begin with the starting node, then it will choose its first neighbor, then it will choose its first neighbor, ..., and so on.
 
 DFS has lower memory consumption compared to BFS.
 
 #### BFS
 BFS is a graph traversal algorithm that consists of these steps:
-1. selet a starting node as current node
-2. for each neighbors of this node
-3. 	   put this neighbor in a queue
-4. select first element from queue as current node
-5. goto step 2.
+1  selet a starting node as current node
+2  for each neighbors of this node
+3  	   put this neighbor in a queue
+4  select first element from queue as current node
+5  goto step 2.
 
 This means that the algorithm will traverse in breadth all the edges of the graph, since it will begin with the starting node, then it will put all its neighbors in a queue, then it will get the first neighbor of the strating node and it will put all its neighbors in the queue, then it will get the second neighbor of the starting node and it will put all its neighbors in the queue, ..., and so on.
 
@@ -36,7 +36,7 @@ BFS has higher memory consumption compared to DFS and is suitable when searching
 For more detailed info on these algorithms check Wikipedia for [DFS](https://en.wikipedia.org/wiki/Depth-first_search) and [BFS](https://en.wikipedia.org/wiki/Breadth-first_search).
 
 
-## Search Tab
+### Search Tab
 
 ![Graphlab Search Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/search.gif)
 The traversal tab shows four panels:
@@ -50,7 +50,7 @@ Pressing the button "Search" will start the searches and will show the different
 The UCS algorithm uses the geometric distance between a node and another as the cost; the A* algorithm uses the distance from the current node to the searched node as the heuristic function. 
 
 
-## Shortest Path
+### Shortest Path
 
 ![Graphlab Shortest Path Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/shortest_path.gif)
 The traversal tab shows two panels:
@@ -61,7 +61,7 @@ In the Shortest Path tab there are two panels, one for Dijkstra's Algorithm and 
 
 
 
-## Minimum Spanning Tree
+### Minimum Spanning Tree
 
 ![Graphlab Minimum Spanning Tree Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/mst.gif)
 The traversal tab shows three panels:
@@ -73,7 +73,7 @@ In the Minimum Spanning Tree tab there are three panels, for Boruvka's Algorithm
 
 
 
-## Connected Components
+### Connected Components
 
 ![Graphlab Connected Components Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/cc.gif)
 The traversal tab shows one panel:
@@ -81,7 +81,7 @@ The traversal tab shows one panel:
 
 A BFS traversal is used to visit all the edges of the graph; then a check is made on the number of visited nodes: if it's lower then the number of nodes of the graph, it means that there are other nodes not touched by the preceding traversal, and so it will loop over all the nodes of the graph looking for the first that has not been visited for starting a BFS on that node too. The operation is repeated until there are no more unvisited nodes.
 
-## Traveling Salesman Problem
+### Traveling Salesman Problem
 
 ![Graphlab Traveling Salesman Problem Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/tsp.gif)
 The traversal tab shows two panels:
@@ -90,11 +90,11 @@ The traversal tab shows two panels:
 
 
 
-# Requirements
+## Requirements
 
 * Java 8 (with the java executable available in path)
 
-# Usage
+## Usage
 The project is built with Maven, so to create the JAR you just need to launch:
 
     mvn clean install
