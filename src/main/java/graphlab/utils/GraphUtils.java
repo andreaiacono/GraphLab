@@ -49,7 +49,7 @@ public class GraphUtils {
                         final int jj = j; // needed a final variable instead of j
                         if (i == j || IntStream.of(selectedEdges).anyMatch(x -> x == jj)) continue;
                         Node node = nodes.get(j);
-                        int distance = Math.abs(node.getX() - currentNode.getX()) + Math.abs(node.getY() - currentNode.getY());
+                        int distance = GraphUtils.getDistance(currentNode, node);
                         if (distance < min) {
                             min = distance;
                             index = j;

@@ -94,6 +94,9 @@ public class TspGraphPanel extends GenericGraphPanel {
                 case NEAREST_NEIGHBOR_TSP:
                     TravelingSalesmanProblem.nearestNeighbor(graph, unvisitEdge, visitNode, visitEdge, processNode, isCanceled);
                     break;
+                case TWO_OPT_TSP:
+                    TravelingSalesmanProblem.twoOpt(graph, unvisitEdge, visitNode, visitEdge, processNode, isCanceled);
+                    break;
             }
 
             setProgressBar(0);

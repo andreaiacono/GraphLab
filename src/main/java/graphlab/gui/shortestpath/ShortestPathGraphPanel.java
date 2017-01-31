@@ -34,8 +34,6 @@ public class ShortestPathGraphPanel extends GenericGraphPanel {
 
     public void executeStart() {
         bellmanFordStep = 0;
-        graph.getNodes().forEach(node -> { node.getEdges().forEach(edge -> edge.recomputeCost());});
-
         shortestPathWorker = new ShortestPathWorker();
         shortestPathWorker.execute();
     }

@@ -139,19 +139,19 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
 
     private Dimension getPreferredSizeForTwoPanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = (dimension.width < dimension.height * 2 ? dimension.width / 2: dimension.height) - 5;
+        panelSide = (dimension.width < dimension.height * 2 ? dimension.width / 2 : dimension.height) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
     private Dimension getPreferredSizeForThreePanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = (dimension.width < dimension.height * 3 ? dimension.width / 3: dimension.height) - 5;
+        panelSide = (dimension.width < dimension.height * 3 ? dimension.width / 3 : dimension.height) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
     private Dimension getPreferredSizeForFourPanels() {
         Dimension dimension = genericTab.getGraphsContainer().getSize();
-        panelSide = (dimension.width < dimension.height ? dimension.width / 2 : dimension.height / 2) - 5 ;
+        panelSide = (dimension.width < dimension.height ? dimension.width / 2 : dimension.height / 2) - 5;
         return new Dimension(panelSide, panelSide);
     }
 
@@ -312,8 +312,8 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
             double angle = Math.atan2(deltaY, deltaX);
             double angleDelta = 2 * Math.PI / 20;
             int arrowArmLength = 20;
-            if (edgeLength < nodeSize*2/mf) {
-                arrowArmLength = edgeLength/3;
+            if (edgeLength < nodeSize * 2 / mf) {
+                arrowArmLength = edgeLength / 3;
             }
             int nodeContactX = sourceNode.getX() + (int) (Math.cos(angle) * (edgeLength));
             int nodeContactY = sourceNode.getY() + (int) (Math.sin(angle) * (edgeLength));
@@ -463,6 +463,10 @@ public abstract class GenericGraphPanel extends JPanel implements ActionListener
         });
         graph.getEdges().forEach(edge -> edge.setColor(null));
         setBackground(WORKING_BACKGROUND_COLOR);
+
+        // recomputes all the edges costs (if any node has been moved on the canvas, cost has changed since it's the euclidean distance)
+        graph.getNodes().forEach(node -> node.getEdges().forEach(edge -> edge.recomputeCost()));
+
         executeStart();
     }
 

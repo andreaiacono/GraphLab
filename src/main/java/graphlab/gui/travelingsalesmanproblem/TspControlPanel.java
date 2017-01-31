@@ -9,9 +9,9 @@ import graphlab.gui.Main;
  */
 public class TspControlPanel extends GenericControlPanel{
 
-    private static int DEFAULT_SPEED = 2;
-    private static int DEFAULT_NODES = 10;
-    private static int DEFAULT_EDGES = 8;
+    private static int DEFAULT_SPEED = 15;
+    private static int DEFAULT_NODES = 12;
+    private static int DEFAULT_EDGES = 7;
 
     public TspControlPanel(Main main, GenericTab genericTab) {
         super(main, genericTab, "Find", DEFAULT_EDGES, DEFAULT_NODES, DEFAULT_SPEED);

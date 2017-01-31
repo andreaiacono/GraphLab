@@ -53,6 +53,10 @@ public enum Algorithm {
         @Override
         public String toString() { return "Bread First Search"; }
     },
+    TWO_OPT_TSP {
+        @Override
+        public String toString() { return "2-opt"; }
+    },
     NEAREST_NEIGHBOR_TSP {
         @Override
         public String toString() { return "Nearest Neighbour"; }
