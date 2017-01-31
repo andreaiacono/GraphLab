@@ -2,6 +2,13 @@
 is a Java Swing application that shows visually how works several graph algorithms. The application has several tabs, each of them showing a particular algorithm; each tab has a control panel on the right that let the user start the execution, stop it and create new graphs using sliders for deciding how many random nodes/edges to create and if directed or not. The user can also set a specific node as the starting node or move the nodes along the canvas just by dragging and dropping them on another position.
 
 The application has now six tabs:
+* Traversal
+* Search
+* Shortest Path
+* Minimum Spanning Tree
+* Connected Components
+* Traveling Salesman Problem
+
 ### Traversal Tab
 
 ![Graphlab Traverse Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/traverse.gif)
@@ -72,7 +79,7 @@ In GraphLab application, the heuristic function is the euclidean distance betwee
 Check Wikipedia for more details: [A* search](https://en.wikipedia.org/wiki/A*_search_algorithm)
 
 
-### Shortest Path
+### Shortest Path Tab
 
 ![Graphlab Shortest Path Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/shortest_path.gif)
 The shortest path tab shows two panels:
@@ -91,7 +98,7 @@ The Bellman-Ford algorithm doesn't care about nodes, but only edges: it loops ov
 
 
 
-### Minimum Spanning Tree
+### Minimum Spanning Tree Tab
 
 ![Graphlab Minimum Spanning Tree Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/mst.gif)
 
@@ -113,7 +120,7 @@ Kruskal's algorithm only consider edges; it starts sorting the edges based on th
 
 
 
-### Connected Components
+### Connected Components Tab
 
 ![Graphlab Connected Components Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/cc.gif)
 The connected components tab shows one panel:
@@ -122,7 +129,7 @@ The connected components tab shows one panel:
 A BFS traversal is used to visit all the edges of the graph and at the end of execution is made a check on the number of visited nodes: if it's lower then the number of nodes of the graph, it means that there are other nodes not touched by the preceding traversal. The algorithm will then loop over all the nodes of the graph looking for the first that has not been visited for starting a BFS on that node too. The operation is repeated until there are no more unvisited nodes. Every component of the graph is shown in a different color.
 
 
-### Traveling Salesman Problem
+### Traveling Salesman Problem Tab
 
 ![Graphlab Traveling Salesman Problem Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/tsp.gif)
 
