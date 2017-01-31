@@ -61,7 +61,7 @@ see above description
 The Uniform Cost Search is based on the idea of BFS, but instead of putting nodes into a queue, it uses a [Priority Queue](https://en.wikipedia.org/wiki/Priority_queue) where the value to prioritize is the edge cost (or, better, the sum of all the costs of the edges from the starting node); so UCS is a [Greedy Algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) where the cheapest edges are chosen first.
 
 #### A*
-The A star algorithm adds the concept of heuristic function, which is a function that take two nodes as arguments and returns a value that tells how good is the node for our goal (the lower the value, the better is). If the heuristic function satisfies two rules:
+The A star algorithm adds the concept of heuristic function, which is a function that takes a node as argument and returns a value that tells how good is that node for our goal (the lower the value, the better is). If the heuristic function satisfies two rules:
 
 1. it never overestimates the value for the node
 2. the triangle inequality holds
