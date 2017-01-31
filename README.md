@@ -13,16 +13,19 @@ Before starting the traversal every node is red (UNKNOWN) and the edges are thin
 
 #### DFS
 DFS is a graph traversal algorithm that consists of these steps:
+
 1. select a starting node as current node
 2. for each neighbors of this node
 3.    select this neighbor as current node
 4. goto step 2
+
 This means that the algorithm will traverse in depth all the edges of the graph, since it will begin with the starting node, then it will choose its first neighbor, then it will choose its first neighbor, ..., and so on.
 
 DFS has lower memory consumption compared to BFS.
 
 #### BFS
 BFS is a graph traversal algorithm that consists of these steps:
+
 1. select a starting node as current node
 2. for each neighbors of this node
 3.    put this neighbor in a queue
@@ -55,12 +58,14 @@ see above description
 see above description
 
 ### UCS
-The Uniform Cost Search is based on the idea of BFS, but instead of putting nodes into a queue, it uses a [Priority Queue](https://en.wikipedia.org/wiki/Priority_queue) where the value to prioritize is the edge cost (or, better, the sum of all the costs of the edges from the starting node); so UCS is a [Greedy Algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) where the less costly edges are chosen first.
+The Uniform Cost Search is based on the idea of BFS, but instead of putting nodes into a queue, it uses a [Priority Queue](https://en.wikipedia.org/wiki/Priority_queue) where the value to prioritize is the edge cost (or, better, the sum of all the costs of the edges from the starting node); so UCS is a [Greedy Algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) where the cheapest edges are chosen first.
 
 ### A*
 The A star algorithm adds the concept of heuristic function, which is a function that take two nodes as arguments and returns a value that tells how good is the node for our goal (the lower the value, the better is). If the heuristic function satisfies two rules:
+
 1. it never overestimates the value for the node
 2. the triangle inequality holds
+
 then the algorithm is guaranteed to be optimal.
 In GraphLab application, the heuristic function is the euclidean distance between a node and the goal node, so that the nodes that are closer to our goal are visited first.
 
