@@ -13,21 +13,21 @@ Before starting the traversal every node is red (UNKNOWN) and the edges are thin
 
 #### DFS
 DFS is a graph traversal algorithm that consists of these steps:
-1  selet a starting node as current node
-2  for each neighbors of this node
-3      select this neighbor as current node
-4  goto step 2
+1. select a starting node as current node
+2. for each neighbors of this node
+3.    select this neighbor as current node
+4. goto step 2
 This means that the algorithm will traverse in depth all the edges of the graph, since it will begin with the starting node, then it will choose its first neighbor, then it will choose its first neighbor, ..., and so on.
 
 DFS has lower memory consumption compared to BFS.
 
 #### BFS
 BFS is a graph traversal algorithm that consists of these steps:
-1  selet a starting node as current node
-2  for each neighbors of this node
-3  	   put this neighbor in a queue
-4  select first element from queue as current node
-5  goto step 2.
+1. select a starting node as current node
+2. for each neighbors of this node
+3.    put this neighbor in a queue
+4. select first element from queue as current node
+5. goto step 2.
 
 This means that the algorithm will traverse in breadth all the edges of the graph, since it will begin with the starting node, then it will put all its neighbors in a queue, then it will get the first neighbor of the strating node and it will put all its neighbors in the queue, then it will get the second neighbor of the starting node and it will put all its neighbors in the queue, ..., and so on.
 
@@ -39,21 +39,37 @@ For more detailed info on these algorithms check Wikipedia for [DFS](https://en.
 ### Search Tab
 
 ![Graphlab Search Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/search.gif)
-The traversal tab shows four panels:
+The search tab shows four panels:
 * DFS (Depth First Search)
 * BFS (Breadth First Search)
-* UCS (Unform Cost Search)
+* UCS (Uniform Cost Search)
 * A* (A star)
 
-Pressing the button "Search" will start the searches and will show the different approaches.
+Instead of just traversing the graph, for searching we start from a node and we want to reach a destination node (usually called _goal_).
 
-The UCS algorithm uses the geometric distance between a node and another as the cost; the A* algorithm uses the distance from the current node to the searched node as the heuristic function. 
+
+### DFS
+see above description
+
+### BFS
+see above description
+
+### UCS
+The Uniform Cost Search is based on the idea of BFS, but instead of putting nodes into a queue, it uses a [Priority Queue](https://en.wikipedia.org/wiki/Priority_queue) where the value to prioritize is the edge cost (or, better, the sum of all the costs of the edges from the starting node); so UCS is a [Greedy Algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) where the less costly edges are chosen first.
+
+### A*
+The A star algorithm adds the concept of heuristic function, which is a function that take two nodes as arguments and returns a value that tells how good is the node for our goal (the lower the value, the better is). If the heuristic function satisfies two rules:
+1. it never overestimates the value for the node
+2. the triangle inequality holds
+then the algorithm is guaranteed to be optimal.
+In GraphLab application, the heuristic function is the euclidean distance between a node and the goal node, so that the nodes that are closer to our goal are visited first.
+
 
 
 ### Shortest Path
 
 ![Graphlab Shortest Path Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/shortest_path.gif)
-The traversal tab shows two panels:
+The shortest path tab shows two panels:
 * Dijkstra
 * Bellman-Ford
 
@@ -64,7 +80,7 @@ In the Shortest Path tab there are two panels, one for Dijkstra's Algorithm and 
 ### Minimum Spanning Tree
 
 ![Graphlab Minimum Spanning Tree Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/mst.gif)
-The traversal tab shows three panels:
+The minimum spanning tree tab shows three panels:
 * Boruvka
 * Prim
 * Kruskal
@@ -76,7 +92,7 @@ In the Minimum Spanning Tree tab there are three panels, for Boruvka's Algorithm
 ### Connected Components
 
 ![Graphlab Connected Components Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/cc.gif)
-The traversal tab shows one panel:
+The connected components tab shows one panel:
 * BFS
 
 A BFS traversal is used to visit all the edges of the graph; then a check is made on the number of visited nodes: if it's lower then the number of nodes of the graph, it means that there are other nodes not touched by the preceding traversal, and so it will loop over all the nodes of the graph looking for the first that has not been visited for starting a BFS on that node too. The operation is repeated until there are no more unvisited nodes.
@@ -84,7 +100,7 @@ A BFS traversal is used to visit all the edges of the graph; then a check is mad
 ### Traveling Salesman Problem
 
 ![Graphlab Traveling Salesman Problem Tab Screenshot](https://raw.githubusercontent.com/andreaiacono/andreaiacono.github.io/master/img/graphlab/tsp.gif)
-The traversal tab shows two panels:
+The traveling salesman problem tab shows two panels:
 * Nearest Neighbor
 * 2-opt
 
